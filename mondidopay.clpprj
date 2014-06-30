@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="C:\xampp\htdocs\mondido\modules\mondidopay\mondidopay.clpprj">
+	<settings><PM_URL><![CDATA[http://localhost/mondidopay/]]></PM_URL><PM_HOME_URL><![CDATA[http://localhost/mondidopay/]]></PM_HOME_URL><PM_LIBS><![CDATA[]]></PM_LIBS><PM_FTP_CONNECTION><![CDATA[]]></PM_FTP_CONNECTION><PM_FTP_DIR><![CDATA[]]></PM_FTP_DIR><PM_FTP_UPLOAD_ON_SAVE><![CDATA[INT:0]]></PM_FTP_UPLOAD_ON_SAVE></settings><removed value=";"/><added value=""/><lastopfiles>
+		<file name="C:\xampp\htdocs\mondido\modules\mondidopay\mondidopay.php"/>
+		<file name="C:\xampp\htdocs\mondido\modules\mondidopay\views\templates\hooks\payment.tpl"/>
+		<file name="C:\xampp\htdocs\mondido\modules\mondidopay\validation.php"/>
+		<file name="C:\xampp\htdocs\mondido\modules\mondidopay\payment.php"/>
+		<file name="C:\xampp\htdocs\mondido\modules\mondidopay\views\templates\hooks\payment_execution.tpl"/>
+		<file name="C:\xampp\htdocs\mondido\modules\mondidopay\views\templates\hooks\info.tpl"/>
+	</lastopfiles>
+	<errors version="4.5">
+	</errors>
+	<codestructure version="4.6.1">
+		<phptree>
+			<treenode node="BWDisplay;PHP:Class Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Display.php;f0;33;1;51;;;;vpos;;vFrontController;;c;;r&#xA;Description&#xA;     Class allow to display tpl on the FO;;d0,34;;b0,0;;m">
+				<treenode node="displayContent;PHP:Function Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Display.php;f8;45;2;50;;;;vpos;;v;;r;;d1,46;;b1,0;;m">
+					<treenode node="this;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Display.php;f44;49;49;49;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+				</treenode>
+				<treenode node="setTemplate;PHP:Function Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Display.php;f8;36;2;42;;;;vpos;;v;;r;;d1,37;;b1,0;;mtemplate;;p">
+					<treenode node="template;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Display.php;f29;36;38;36;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+					<treenode node="this;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Display.php;f3;41;8;41;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+				</treenode>
+			</treenode>
+			<treenode node="Context;PHP:Class Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f0;73;1;251;;;;vpos;;v;;r;;d0,74;;b0,0;;m">
+				<treenode node="__construct;PHP:Function Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f8;150;2;183;;;;vpos;;v;;r;;d1,151;;b1,0;;m">
+					<treenode node="cart;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f18;152;23;152;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+					<treenode node="cookie;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f9;152;16;152;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+					<treenode node="link;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f34;152;39;152;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+					<treenode node="smarty;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f25;152;32;152;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+					<treenode node="this;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f2;154;7;154;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+				</treenode>
+				<treenode node="checkMobileContext;PHP:Function Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f11;213;2;218;;;;vpos;;v;;r;;d1,214;;b2,0;;m">
+					<treenode node="_SERVER;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f15;215;23;215;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+				</treenode>
+				<treenode node="cloneContext;PHP:Function Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f8;237;2;240;;;;vpos;;vContext;;r&#xA;Description&#xA;     Clone current context&#xA;&#xA;Return:&#xA;   Clone current context;;d1,238;;b1,0;;m">
+					<treenode node="this;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f15;239;20;239;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+				</treenode>
+				<treenode node="getContext;PHP:Function Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f15;225;2;230;;;;vpos;;vContext;;r&#xA;Description&#xA;     Get a singleton context;;d1,226;;b1,5;;m">
+					<treenode node="instance;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f19;227;28;227;;;;vposContext;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+				</treenode>
+				<treenode node="getMobileDevice;PHP:Function Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f8;185;2;211;;;;vpos;;v;;r;;d1,186;;b1,0;;m">
+					<treenode node="this;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f14;187;19;187;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+				</treenode>
+				<treenode node="shop;PHP:Function Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f15;245;2;250;;;;vpos;;vint;;r&#xA;Description&#xA;      Shop context type (Shop::CONTEXT_ALL, etc.)&#xA;&#xA;Return:&#xA;   Shop context type (Shop::CONTEXT_ALL, etc;;d1,246;;b1,5;;m">
+					<treenode node="instance;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f13;247;22;247;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+				</treenode>
+				<treenode node="cart;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f8;83;13;83;;;;vposCart;;v;;r;;d-1,-1;;b1,0;;m">
+				</treenode>
+				<treenode node="controller;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f8;113;19;113;;;;vposController;;v;;r;;d-1,-1;;b1,0;;m">
+				</treenode>
+				<treenode node="cookie;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f8;93;15;93;;;;vposCookie;;v;;r;;d-1,-1;;b1,0;;m">
+				</treenode>
+				<treenode node="country;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f8;103;16;103;;;;vposCountry;;v;;r;;d-1,-1;;b1,0;;m">
+				</treenode>
+				<treenode node="currency;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f8;123;17;123;;;;vposCurrency;;v;;r;;d-1,-1;;b1,0;;m">
+				</treenode>
+				<treenode node="customer;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f8;88;17;88;;;;vposCustomer;;v;;r;;d-1,-1;;b1,0;;m">
+				</treenode>
+				<treenode node="employee;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f8;108;17;108;;;;vposEmployee;;v;;r;;d-1,-1;;b1,0;;m">
+				</treenode>
+				<treenode node="instance;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f18;78;27;78;;;;vposContext;;v;;r;;d-1,-1;;b2,5;;m">
+				</treenode>
+				<treenode node="language;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f8;118;17;118;;;;vposLanguage;;v;;r;;d-1,-1;;b1,0;;m">
+				</treenode>
+				<treenode node="link;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f8;98;13;98;;;;vposLink;;v;;r;;d-1,-1;;b1,0;;m">
+				</treenode>
+				<treenode node="mobile_detect;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f8;143;22;143;;;;vposMobile;;v;;r;;d-1,-1;;b1,0;;m">
+				</treenode>
+				<treenode node="mobile_device;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f11;148;25;148;;;;vposboolean;;v;;r;;d-1,-1;;b2,0;;m">
+				</treenode>
+				<treenode node="shop;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f8;133;13;133;;;;vposShop;;v;;r;;d-1,-1;;b1,0;;m">
+				</treenode>
+				<treenode node="smarty;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f8;138;15;138;;;;vposSmarty;;v;;r;;d-1,-1;;b1,0;;m">
+				</treenode>
+				<treenode node="tab;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f8;128;12;128;;;;vposAdminTab;;v;;r;;d-1,-1;;b1,0;;m">
+				</treenode>
+			</treenode>
+			<treenode node="ControllerBackwardModule;PHP:Class Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f0;295;1;324;;;;vpos;;v;;r&#xA;Description&#xA;     Class Controller for a Backward compatibility Allow to use method declared in 1.5&#xA;&#xA;Return:&#xA;   Class Controller for a Backward compatibility;;d0,296;;b0,0;;m">
+				<treenode node="addCSS;PHP:Function Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f8;311;2;314;;;;vpos;;vvoid;;r&#xA;Description&#xA;     &#xA;&#xA;Parameters:&#xA;     $css_uri&#xA;    string $css_media_type;;d1,312;;b1,0;;m $css_uri;;pstring $css_media_type;;p">
+					<treenode node="css_media_type;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f34;311;49;311;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+					<treenode node="css_uri;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f24;311;32;311;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+				</treenode>
+				<treenode node="addJquery;PHP:Function Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f8;316;2;322;;;;vpos;;v;;r;;d1,317;;b1,0;;m">
+					<treenode node="this;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f3;319;8;319;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+				</treenode>
+				<treenode node="addJS;PHP:Function Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f8;301;2;304;;;;vpos;;vvoid;;r&#xA;Description&#xA;     &#xA;&#xA;Parameters:&#xA;     $js_uri;;d1,302;;b1,0;;m $js_uri;;p">
+					<treenode node="js_uri;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f23;301;30;301;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+				</treenode>
+			</treenode>
+			<treenode node="CustomerBackwardModule;PHP:Class Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f0;330;1;350;;;;vpos;;vCustomer;;c;;r&#xA;Description&#xA;     Class Customer for a Backward compatibility Allow to use method declared in 1.5&#xA;&#xA;Parameters: - Class Customer for a Backward compatibility&#xA;&#xA;Return:&#xA;   Class Customer for a Backward compatibility;;d0,331;;b0,0;;m">
+				<treenode node="isLogged;PHP:Function Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f8;340;2;349;;;;vpos;;vboolean;;r&#xA;Description&#xA;     Check customer informations and return customer validity&#xA;&#xA;Parameters:&#xA;    boolean $with_guest - customer validity&#xA;&#xA;Return:&#xA;   customer validity;;d1,341;;b1,0;;mboolean $with_guest;;p">
+					<treenode node="this;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f22;342;27;342;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+					<treenode node="with_guest;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f26;340;37;340;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+				</treenode>
+				<treenode node="logged;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f8;332;15;332;;;;vpos;;v;;r;;d-1,-1;;b1,0;;m">
+				</treenode>
+			</treenode>
+			<treenode node="Logger;PHP:Class Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f1;60;2;68;;;;vpos;;v;;r;;d1,61;;b0,0;;m">
+				<treenode node="AddLog;PHP:Function Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f16;62;3;67;;;;vpos;;v;;r;;d2,63;;b1,5;;mmessage;;pseverity;;p">
+					<treenode node="fp;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f3;64;6;64;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+					<treenode node="message;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f32;62;40;62;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+					<treenode node="severity;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f42;62;51;62;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+				</treenode>
+			</treenode>
+			<treenode node="mondidopay;PHP:Class Name;C:\xampp\htdocs\mondido\modules\mondidopay\mondidopay.php;f0;32;1;199;;;;vpos;;vPaymentModule;;c;;r&#xA;Description&#xA;     $Id$ mondidopayment Module;;d39,32;;b0,0;;m">
+				<treenode node="__construct;PHP:Function Name;C:\xampp\htdocs\mondido\modules\mondidopay\mondidopay.php;f8;36;3;54;;;;vpos;;v;;r;;d31,36;;b1,0;;m">
+					<treenode node="this;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\mondidopay.php;f2;37;7;37;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+				</treenode>
+				<treenode node="execPayment;PHP:Function Name;C:\xampp\htdocs\mondido\modules\mondidopay\mondidopay.php;f8;163;2;197;;;;vpos;;v;;r;;d35,163;;b1,0;;mcart;;p">
+					<treenode node="_GET;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\mondidopay.php;f14;170;19;170;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+					<treenode node="_SERVER;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\mondidopay.php;f103;192;111;192;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+					<treenode node="billing_address;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\mondidopay.php;f2;173;18;173;;;;vposAddress;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+					<treenode node="cart;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\mondidopay.php;f29;163;34;163;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+					<treenode node="cart_details;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\mondidopay.php;f2;172;15;172;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+					<treenode node="cookie;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\mondidopay.php;f9;174;16;174;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+					<treenode node="error_name;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\mondidopay.php;f2;170;13;170;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+					<treenode node="smarty;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\mondidopay.php;f18;174;25;174;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+					<treenode node="this;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\mondidopay.php;f6;167;11;167;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+					<treenode node="total;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\mondidopay.php;f14;182;20;182;;;;vposstring;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+				</treenode>
+				<treenode node="getContent;PHP:Function Name;C:\xampp\htdocs\mondido\modules\mondidopay\mondidopay.php;f8;126;3;152;;;;vpos;;v;;r;;d29,126;;b1,0;;m">
+					<treenode node="_POST;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\mondidopay.php;f12;129;18;129;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+					<treenode node="_SERVER;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\mondidopay.php;f60;149;68;149;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+					<treenode node="smarty;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\mondidopay.php;f9;141;16;141;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+					<treenode node="this;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\mondidopay.php;f3;137;8;137;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+				</treenode>
+				<treenode node="hookPayment;PHP:Function Name;C:\xampp\htdocs\mondido\modules\mondidopay\mondidopay.php;f8;79;2;105;;;;vpos;;v;;r;;d37,79;;b1,0;;mparams;;p">
+					<treenode node="_SERVER;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\mondidopay.php;f60;103;68;103;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+					<treenode node="billing_address;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\mondidopay.php;f2;82;18;82;;;;vposAddress;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+					<treenode node="cart;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\mondidopay.php;f2;80;7;80;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+					<treenode node="cart_details;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\mondidopay.php;f2;81;15;81;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+					<treenode node="file;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\mondidopay.php;f2;83;7;83;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+					<treenode node="params;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\mondidopay.php;f29;79;36;79;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+					<treenode node="smarty;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\mondidopay.php;f9;84;16;84;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+					<treenode node="this;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\mondidopay.php;f10;80;15;80;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+					<treenode node="total;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\mondidopay.php;f15;93;21;93;;;;vposstring;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+				</treenode>
+				<treenode node="httpAuth;PHP:Function Name;C:\xampp\htdocs\mondido\modules\mondidopay\mondidopay.php;f8;108;2;124;;;;vpos;;v;;r;;d27,108;;b1,0;;m">
+					<treenode node="context;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\mondidopay.php;f2;117;10;117;;;;vposresource;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+					<treenode node="data;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\mondidopay.php;f3;120;8;120;;;;vposmixed;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+					<treenode node="file;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\mondidopay.php;f2;119;7;119;;;;vposstring;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+					<treenode node="merchantID;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\mondidopay.php;f2;109;13;109;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+					<treenode node="opts;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\mondidopay.php;f2;113;7;113;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+					<treenode node="password;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\mondidopay.php;f2;110;11;110;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+					<treenode node="remoteurl;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\mondidopay.php;f2;111;12;111;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+					<treenode node="this;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\mondidopay.php;f16;109;21;109;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+				</treenode>
+				<treenode node="install;PHP:Function Name;C:\xampp\htdocs\mondido\modules\mondidopay\mondidopay.php;f8;58;2;64;;;;vpos;;v;;r;;d26,58;;b1,0;;m">
+					<treenode node="this;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\mondidopay.php;f29;59;34;59;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+				</treenode>
+				<treenode node="setModuleSettings;PHP:Function Name;C:\xampp\htdocs\mondido\modules\mondidopay\mondidopay.php;f8;154;2;160;;;;vpos;;v;;r;;d36,154;;b1,0;;m">
+					<treenode node="this;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\mondidopay.php;f2;155;7;155;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+					</treenode>
+				</treenode>
+				<treenode node="uninstall;PHP:Function Name;C:\xampp\htdocs\mondido\modules\mondidopay\mondidopay.php;f8;68;2;77;;;;vpos;;v;;r;;d28,68;;b1,0;;m">
+				</treenode>
+				<treenode node="_errors;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\mondidopay.php;f11;34;19;34;;;;vpos;;v;;r;;d-1,-1;;b2,0;;m">
+				</treenode>
+			</treenode>
+			<treenode node="Shop;PHP:Class Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f1;37;2;58;;;;vpos;;vObjectModel;;c;;r&#xA;Description&#xA;     $Id$ mondidopayment Module;;d1,38;;b0,0;;m">
+				<treenode node="__construct;PHP:Function Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f9;42;3;44;;;;vpos;;v;;r;;d2,43;;b1,0;;m">
+				</treenode>
+				<treenode node="getCurrentShop;PHP:Function Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f16;54;3;57;;;;vpos;;v;;r;;d2,55;;b1,5;;m">
+				</treenode>
+				<treenode node="getShops;PHP:Function Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f16;47;3;52;;;;vpos;;v;;r;;d2,48;;b1,5;;m">
+				</treenode>
+				<treenode node="id;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f9;39;12;39;;;;vpos;;v;;r;;d-1,-1;;b1,0;;m">
+				</treenode>
+				<treenode node="id_shop_group;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f9;40;23;40;;;;vpos;;v;;r;;d-1,-1;;b1,0;;m">
+				</treenode>
+			</treenode>
+			<treenode node="ShopBackwardModule;PHP:Class Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f0;256;1;289;;;;vpos;;vShop;;c;;r&#xA;Description&#xA;     Class Shop for Backward compatibility;;d0,257;;b0,0;;m">
+				<treenode node="CONTEXT_ALL;PHP:PHP Word;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f6;258;18;258;;;;vpos;;v;;r1;;d-1,-1;;b0,0;;m">
+				</treenode>
+				<treenode node="getContextType;PHP:Function Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f8;264;2;267;;;;vpos;;v;;r;;d1,265;;b1,0;;m">
+				</treenode>
+				<treenode node="getID;PHP:Function Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f8;270;2;273;;;;vpos;;v;;r;;d1,271;;b1,0;;m">
+				</treenode>
+				<treenode node="getTheme;PHP:Function Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f8;280;2;283;;;;vpos;;vstring;;r&#xA;Description&#xA;     Get shop theme name;;d1,281;;b1,0;;m">
+				</treenode>
+				<treenode node="isFeatureActive;PHP:Function Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f8;285;2;288;;;;vpos;;v;;r;;d1,286;;b1,0;;m">
+				</treenode>
+				<treenode node="id;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f8;260;11;260;;;;vpos;;v;;r;;d-1,-1;;b1,0;;m">
+				</treenode>
+				<treenode node="id_shop_group;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php;f8;261;22;261;;;;vpos;;v;;r;;d-1,-1;;b1,0;;m">
+				</treenode>
+			</treenode>
+			<treenode node="_GET;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\validation.php;f18;39;23;39;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="_POST;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\validation.php;f38;37;44;37;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="cart;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\Codelobster0.php;f30;9;35;9;;C:\xampp\htdocs\mondido\modules\mondidopay\validation.php;f32;38;37;38;;C:\xampp\htdocs\mondido\modules\mondidopay\payment.php;f30;11;35;11;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="context;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\validation.php;f2;74;10;74;;;;vposresource;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="cookie;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\Codelobster0.php;f5;5;12;5;;C:\xampp\htdocs\mondido\modules\mondidopay\validation.php;f99;37;106;37;;C:\xampp\htdocs\mondido\modules\mondidopay\payment.php;f5;5;12;5;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="currency;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\validation.php;f0;37;9;37;;;;vposCurrency;;v;;r&#xA;Description&#xA;     $Id$ mondidopayment Module;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="currentIndex;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Codelobster0.php;f123;49;136;49;;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\backward.php;f123;49;136;49;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="data;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\validation.php;f3;77;8;77;;;;vposmixed;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="file;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\validation.php;f2;76;7;76;;;;vposstring;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="hash;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\validation.php;f0;40;5;40;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="merchantID;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\validation.php;f1;66;12;66;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="mondidopay;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\Codelobster0.php;f0;8;11;8;;C:\xampp\htdocs\mondido\modules\mondidopay\validation.php;f0;43;11;43;;C:\xampp\htdocs\mondido\modules\mondidopay\payment.php;f0;10;11;10;;;;vposmondidopay;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="opts;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\validation.php;f2;70;7;70;;;;vposstring;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="order;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\validation.php;f1;78;7;78;;;;vposOrder;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="password;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\validation.php;f2;67;11;67;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="payment_ref;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\validation.php;f0;41;12;41;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="payments;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\validation.php;f1;79;10;79;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="remoteurl;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\validation.php;f2;68;12;68;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="this;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Codelobster0.php;f11;44;16;44;;C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\backward.php;f11;44;16;44;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="total;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\validation.php;f0;38;6;38;;;;vposfloat;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+			<treenode node="transaction_id;PHP:Var Name;C:\xampp\htdocs\mondido\modules\mondidopay\validation.php;f0;39;15;39;;;;vpos;;v;;r;;d-1,-1;;b0,0;;m">
+			</treenode>
+		</phptree>
+		<jstree>
+		</jstree>
+		<scsstree>
+		</scsstree>
+		<lesstree>
+		</lesstree>
+	</codestructure><cakedata>
+	</cakedata>
+	<dplmenupath>
+	</dplmenupath><laravael>
+	</laravael><smartyassings>
+	</smartyassings><twigtemplate>
+	</twigtemplate><yiidata>
+	</yiidata>
+	<todoblock>
+	</todoblock>
+	<filescache>
+		<file name="C:\xampp\htdocs\mondido\modules\mondidopay\views\templates\hooks\payment_execution.tpl" crc="-1093632654"/>
+		<file name="C:\xampp\htdocs\mondido\modules\mondidopay\views\templates\hooks\payment.tpl" crc="753553402"/>
+		<file name="C:\xampp\htdocs\mondido\modules\mondidopay\views\templates\hooks\info.tpl" crc="1730140143"/>
+		<file name="C:\xampp\htdocs\mondido\modules\mondidopay\views\templates\hooks\index.php" crc="234797605"/>
+		<file name="C:\xampp\htdocs\mondido\modules\mondidopay\views\templates\admin\config.tpl" crc="-1673231485"/>
+		<file name="C:\xampp\htdocs\mondido\modules\mondidopay\views\templates\index.php" crc="234797605"/>
+		<file name="C:\xampp\htdocs\mondido\modules\mondidopay\views\index.php" crc="234797605"/>
+		<file name="C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\index.php" crc="-1371568211"/>
+		<file name="C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Display.php" crc="-1838882577"/>
+		<file name="C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\Context.php" crc="-663246616"/>
+		<file name="C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\backward.php" crc="-747780198"/>
+		<file name="C:\xampp\htdocs\mondido\modules\mondidopay\backward_compatiblity\backward.ini" crc="-858695924"/>
+		<file name="C:\xampp\htdocs\mondido\modules\mondidopay\validation.php" crc="-916315999"/>
+		<file name="C:\xampp\htdocs\mondido\modules\mondidopay\payment.php" crc="-1922625910"/>
+		<file name="C:\xampp\htdocs\mondido\modules\mondidopay\mondidopay.php" crc="-1107319101"/>
+		<file name="C:\xampp\htdocs\mondido\modules\mondidopay\index.php" crc="962455799"/>
+		<file name="C:\xampp\htdocs\mondido\modules\mondidopay\config.xml" crc="-691549663"/>
+	</filescache>
+</project>
