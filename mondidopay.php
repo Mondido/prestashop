@@ -101,7 +101,15 @@ class mondidopay extends PaymentModule {
             'metadata'=> $data,
             'cart' => $cart,
             'address'	=> $billing_address,
-            'hash'	=> md5($this->merchantID . 'a'.$cart->id . $this->context->customer->id . $total . $this->secretCode),
+            'hash'	=> md5(
+                $this->merchantID . 
+                'a'.$cart->id . 
+                $this->context->customer->id . 
+                $total . 
+                strtolower(new Currency((int)$cart->id_currency)) . 
+                (  ($this->test == "true") ? "test"  : ""  ) . 
+                $this->secretCode
+            ),
             'this_path' => $this->_path,
             'this_path_ssl' => (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://').htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__.'modules/'.$this->name.'/'
         ));
@@ -192,7 +200,15 @@ class mondidopay extends PaymentModule {
             'metadata'=> $data,
             'cart' => $cart,
             'address'	=> $billing_address,
-            'hash'	=> md5($this->merchantID . 'a'.$cart->id . $this->context->customer->id . $total . $this->secretCode),
+            'hash'	=> md5(
+                $this->merchantID . 
+                'a'.$cart->id . 
+                $this->context->customer->id . 
+                $total . 
+                strtolower(new Currency((int)$cart->id_currency)) . 
+                (  ($this->test == "true") ? "test"  : ""  ) . 
+                $this->secretCode
+            ),
             'this_path' => $this->_path,
             'this_path_ssl' => (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://').htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__.'modules/'.$this->name.'/'
         ));
