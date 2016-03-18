@@ -3,28 +3,18 @@
  *  $Id$
  *  mondidopayment Module
  *
- * Copyright @copyright 2014 3o-BPO
+ * Copyright @copyright 2016 Mondido
  *
  * @category Payment
- * @version 1.0
- * @copyright 01.06.2014, 3o-BPO
- * @author Jeeky Vincent Mojica, <www.3obpo.com>
+ * @version 1.4
+ * @copyright 2016 Mondido
+ * @author Mondido
  * @link
  * @license
  *
  * Description:
  *
  * Payment module mondidopay
- *
- * --
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.
- * It is also available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
- * If you did not receive a copy of the license and are unable to
- * obtain it through the world-wide-web, please send an email
- * to license@touchdesign.de so we can send you a copy immediately.
  *
  */
 if(!defined('_PS_VERSION_'))
@@ -42,7 +32,7 @@ class mondidopay extends PaymentModule {
         $this->description = $this->l('Online payment by Mondido');
 
         $this->author = 'Mondido';
-        $this->version = '1.0';
+        $this->version = '1.4';
         $this->tab = 'payments_gateways';
 
 
@@ -57,11 +47,10 @@ class mondidopay extends PaymentModule {
 
 
     public function install(){
-        if(!parent::install() OR  !$this->registerHook('invoice') OR !$this->registerHook('payment') OR !$this->registerHook('paymentReturn'))
+        if(!parent::install() OR  !$this->registerHook('invoice') || !$this->registerHook('payment') || !$this->registerHook('paymentReturn')){
             return false;
-
+        }
         return true;
-
     }
 
 
@@ -202,6 +191,5 @@ class mondidopay extends PaymentModule {
     }
 
 }
-
 
 ?>
