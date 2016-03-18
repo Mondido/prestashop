@@ -3,12 +3,12 @@
  *  $Id$
  *  mondidopayment Module
  *
- * Copyright @copyright 2014 3o-BPO
+ * Copyright @copyright 2016 Mondido Payments AB
  *
  * @category Payment
- * @version 1.0
- * @copyright 01.06.2014, 3o-BPO
- * @author Jeeky Vincent Mojica, <www.3obpo.com>
+ * @version 1.2
+ * @copyright 2016 Mondido Payments AB
+ * @author Mondido
  * @link
  * @license
  *
@@ -18,13 +18,7 @@
  *
  * --
  *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.
- * It is also available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
- * If you did not receive a copy of the license and are unable to
- * obtain it through the world-wide-web, please send an email
- * to license@touchdesign.de so we can send you a copy immediately.
+ * 
  *
  */
 if(!defined('_PS_VERSION_'))
@@ -42,7 +36,7 @@ class mondidopay extends PaymentModule {
         $this->description = $this->l('Online payment by Mondido');
 
         $this->author = 'Mondido';
-        $this->version = '1.0';
+        $this->version = '1.2';
         $this->tab = 'payments_gateways';
 
 
@@ -84,7 +78,10 @@ class mondidopay extends PaymentModule {
         $billing_address = new Address($this->context->cart->id_address_invoice);
         $file = $this->httpAuth();
         $data = Tools::jsonEncode($cart->getProducts());
-        $error_name = $_GET['error_name'];
+        $error_name = '';
+        if (isset($_GET['error_name'])){
+            $error_name = $_GET['error_name'];
+        }
 
 
         $smarty->assign(array(
@@ -166,13 +163,15 @@ class mondidopay extends PaymentModule {
 
 
     public function execPayment($cart){
-
-
-
         if(!$this->active)
             return;
         $data = Tools::jsonEncode($cart->getProducts());
-        $error_name=$_GET['error_name'];
+
+        $error_name = '';
+        if (isset($_GET['error_name'])){
+            $error_name = $_GET['error_name'];
+        }
+
         $cart = $this->context->cart;
         $cart_details = $cart->getSummaryDetails(null, true);
         $billing_address = new Address($this->context->cart->id_address_invoice);
