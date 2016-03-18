@@ -26,22 +26,24 @@ class mondidopay extends PaymentModule {
 
     public function __construct() {
         $this->name = 'mondidopay';
-
         parent::__construct();
         $this->displayName = $this->l('MONDIDO PAYMENTS');
         $this->description = $this->l('Online payment by Mondido');
-
         $this->author = 'Mondido';
         $this->version = '1.4';
         $this->tab = 'payments_gateways';
-
-
-
         $this->confirmUninstall = $this->l('Are you sure you want to uninstall?');
-
         $this->setModuleSettings();
 
 
+
+    $this->need_instance = 0;
+    $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_); 
+    $this->bootstrap = true;
+ 
+    if (!Configuration::get('MYMODULE_NAME'))      
+      $this->warning = $this->l('No name provided');
+      
     }
 
 
