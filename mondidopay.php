@@ -37,11 +37,11 @@ class mondidopay extends PaymentModule {
 
 
 
-    $this->need_instance = 0;
+    $this->need_instance = 1;
     $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_); 
     $this->bootstrap = true;
  
-    if (!Configuration::get('MYMODULE_NAME'))      
+    if (!Configuration::get('mondidopay'))      
       $this->warning = $this->l('No name provided');
       
     }
