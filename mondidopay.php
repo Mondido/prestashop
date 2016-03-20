@@ -20,6 +20,8 @@
 if(!defined('_PS_VERSION_'))
     exit;
 
+include_once(_PS_SWIFT_DIR_.'Swift/Message/Encoder.php');
+
 class mondidopay extends PaymentModule {
 
     protected $_errors = array();
@@ -72,10 +74,9 @@ class mondidopay extends PaymentModule {
         $cart = $this->context->cart;
         $cart_details = $cart->getSummaryDetails(null, true);
         $billing_address = new Address($this->context->cart->id_address_invoice);
-        $file = $this->httpAuth();
         $data = Tools::jsonEncode($cart->getProducts());
-        $error_name = $_GET['error_name'];
-
+        $error_name = Tools::getValue('error_name');
+        $total = number_format($cart->getOrderTotal(true, 3), 2, '.', '');
 
         $this->context->smarty->assign(array(
             'error_name' =>  $error_name,
@@ -83,7 +84,7 @@ class mondidopay extends PaymentModule {
             'secretCode' => $this->secretCode,
             'password'	=> $this->password,
             'test'	=> $this->test,
-            'total' => $total = number_format($cart->getOrderTotal(true, 3), 2, '.', ''),
+            'total' => $total,
             'subtotal' => number_format($cart_details['total_price_without_tax'], 2, '.', ''),
             'currency' => new Currency((int)$cart->id_currency),
             'custom' => Tools::jsonEncode(array('id_cart' => $cart->id, 'hash' => $cart->nbProducts())),
@@ -104,15 +105,16 @@ class mondidopay extends PaymentModule {
         $merchantID = $this->merchantID;
         $password = $this->password;
         $remoteurl = 'https://api.mondido.com/' ;
+        $Swift_Message_Encoder = new Swift_Message_Encoder();
 
         $opts = array('http' => array('method' => "GET",
-            'header' => "Authorization: Basic " . base64_encode("$merchantID:$password")
+            'header' => "Authorization: Basic " . $Swift_Message_Encoder->base64Encode("$merchantID:$password")
         ));
 
         $context = stream_context_create($opts);
 
-        $file = file_get_contents($remoteurl, false, $context);
-        $data = (array) json_decode($file, true);
+        $file = Tools::file_get_contents($remoteurl, false, $context);
+        $data = (array) Tools::jsonDecode($file, true);
         //$data = implode(',', array_values($data));
         return $data;
 
@@ -121,7 +123,7 @@ class mondidopay extends PaymentModule {
     public function getContent(){
 
 
-        if (isset($_POST['mondido_updateSettings'])){
+        if (Tools::getIsset(Tools::getValue('mondido_updateSettings'))){
             Configuration::updateValue('MONDIDO_MERCHANTID', Tools::getValue('merchantID'));
             Configuration::updateValue('MONDIDO_SECRET', Tools::getValue('secretCode'));
             Configuration::updateValue('MONDIDO_PASSWORD', Tools::getValue('password'));
@@ -161,18 +163,18 @@ class mondidopay extends PaymentModule {
         if(!$this->active)
             return;
         $data = Tools::jsonEncode($cart->getProducts());
-        $error_name=$_GET['error_name'];
+        $error_name=Tools::getValue('error_name');
         $cart = $this->context->cart;
         $cart_details = $cart->getSummaryDetails(null, true);
         $billing_address = new Address($this->context->cart->id_address_invoice);
-
+        $total = number_format($cart->getOrderTotal(true, 3), 2, '.', '');
         $this->context->smarty->assign(array(
             'error_name' =>  $error_name,
             'merchantID' => $this->merchantID,
             'secretCode' => $this->secretCode,
             'password'	=> $this->password,
             'test'	=> $this->test,
-            'total' => $total = number_format($cart->getOrderTotal(true, 3), 2, '.', ''),
+            'total' => $total,
             'subtotal' => number_format($cart_details['total_price_without_tax'], 2, '.', ''),
             'currency' => new Currency((int)$cart->id_currency),
             'custom' => Tools::jsonEncode(array('id_cart' => $cart->id, 'hash' => $cart->nbProducts())),

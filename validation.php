@@ -1,31 +1,29 @@
 <?php
 /**
- *  $Id$
- *  mondidopayment Module
+ *  $Id$ mondidopayment Module
  *
  * Copyright @copyright 2016 Mondido
  *
- * @category Payment
- * @version 1.4.0
- * @copyright 2016 Mondido
- * @author Mondido
- * @link
- * @license
+ *  @category Payment
+ *  @version 1.4.0
+ *  @author Mondido
+ *  @copyright 2016 Mondido
+ *  @link
+ *  @license
  *
  * Description:
  *
  * Payment module mondidopay
  *
  */
-
 require dirname(__FILE__).'/../../config/config.inc.php';
 include(dirname(__FILE__).'/../../header.php');
 require dirname(__FILE__).'/mondidopay.php';
+include_once(_PS_SWIFT_DIR_.'Swift/Message/Encoder.php');
 
 
 
-
-$currency = new Currency(intval(Tools::getIsset((Tools::getValue('currency_payement') ? Tools::getValue('currency_payement') : $cookie->id_currency));
+$currency = new Currency(intval(Tools::getIsset((Tools::getValue('currency_payement')) ? Tools::getValue('currency_payement') : $cookie->id_currency)));
 $total = floatval(number_format($cart->getOrderTotal(true, 3), 2, '.', ''));
 $transaction_id = Tools::getValue('transaction_id');
 $hash = Tools::getValue('hash');
@@ -35,19 +33,19 @@ $mondidopay = new mondidopay();
 $mondidopay->validateOrder($cart->id,  _PS_OS_PAYMENT_, $total, $mondidopay->displayName, NULL, NULL, $currency->id);
 
 
-if (Tools::getIsset((Tools::getValue('transaction_id'))){
+if (Tools::getIsset((Tools::getValue('transaction_id')))){
     $merchantID = Configuration::get('MONDIDO_MERCHANTID');
     $password =Configuration::get('MONDIDO_PASSWORD');
     $remoteurl = 'https://api.mondido.com/v1/transactions/'. $transaction_id;
-
+    $Swift_Message_Encoder = new Swift_Message_Encoder();
     $opts = array('http' => array('method' => "GET",
-        'header' => "Authorization: Basic " . base64_encode("$merchantID:$password")
+        'header' => "Authorization: Basic " . $Swift_Message_Encoder->base64Encode("$merchantID:$password")
     ));
 
     $context = stream_context_create($opts);
 
     $file = Tools::file_get_contents($remoteurl, false, $context);
-    $data = (array) json_decode($file, true);
+    $data = (array) Tools::jsonDecode($file, true);
     $order = new Order($mondidopay->currentOrder);
     $payments = $order->getOrderPaymentCollection();
     $payments[0]->transaction_id = $transaction_id;
