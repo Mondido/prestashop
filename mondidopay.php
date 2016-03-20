@@ -1,18 +1,27 @@
 <?php
 /**
-*    $Id$ mondidopayment Module
+* 2007-2015 PrestaShop
 *
-*    Copyright @copyright 2016 Mondido
+* NOTICE OF LICENSE
 *
-*    @category  Payment
-*    @version   1.4.0
-*    @author    Mondido
-*    @copyright 2016 Mondido
-*    @link      https://www.mondido.com
-*    @license   MIT
+* This source file is subject to the Academic Free License (AFL 3.0)
+* that is bundled with this package in the file LICENSE.txt.
+* It is also available through the world-wide-web at this URL:
+* http://opensource.org/licenses/afl-3.0.php
+* If you did not receive a copy of the license and are unable to
+* obtain it through the world-wide-web, please send an email
+* to license@prestashop.com so we can send you a copy immediately.
 *
-*   Description:
-*   Payment module mondidopay
+* DISCLAIMER
+*
+* Do not edit or add to this file if you wish to upgrade PrestaShop to newer
+* versions in the future. If you wish to customize PrestaShop for your
+* needs please refer to http://www.prestashop.com for more information.
+*
+*  @author    PrestaShop SA <contact@prestashop.com>
+*  @copyright 2007-2015 PrestaShop SA
+*  @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+*  International Registered Trademark & Property of PrestaShop SA
 */
 
 if (!defined('_PS_VERSION_')) {
@@ -21,11 +30,12 @@ if (!defined('_PS_VERSION_')) {
 
 include_once(_PS_SWIFT_DIR_.'Swift/Message/Encoder.php');
 
-class mondidopay extends PaymentModule {
+class Mondidopay extends PaymentModule 
+{
     protected $_errors = array();
-    public function __construct() {
+    public function __construct() 
+    {
         $this->name = 'mondidopay';
-        parent::__construct();
         $this->displayName = $this->l('MONDIDO PAYMENTS');
         $this->description = $this->l('Online payment by Mondido');
         $this->author = 'Mondido';
@@ -36,6 +46,7 @@ class mondidopay extends PaymentModule {
         $this->need_instance = 1;
         $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
         $this->bootstrap = true;
+        parent::__construct();
     
         if (!Configuration::get('mondidopay')) {
             $this->warning = $this->l('No name provided');
@@ -44,11 +55,15 @@ class mondidopay extends PaymentModule {
 
 
 
-    public function install() {
-        if (!parent::install() or !$this->registerHook('invoice') || !$this->registerHook('payment') || !$this->registerHook('paymentReturn')) {
-            return false;
-        }
-        return true;
+    public function install() 
+    {
+        return parent::install() &&
+            $this->registerHook('header') &&
+            $this->registerHook('backOfficeHeader') &&
+            $this->registerHook('payment') &&
+            $this->registerHook('paymentReturn') &&
+            $this->registerHook('actionPaymentConfirmation') &&
+            $this->registerHook('displayPayment');
     }
 
 
@@ -117,7 +132,8 @@ class mondidopay extends PaymentModule {
     public function getContent() {
 
 
-        if (Tools::getIsset(Tools::getValue('mondido_updateSettings'))) {
+        if (Tools::getIsset(Tools::getValue('mondido_updateSettings'))) 
+        {
             Configuration::updateValue('MONDIDO_MERCHANTID', Tools::getValue('merchantID'));
             Configuration::updateValue('MONDIDO_SECRET', Tools::getValue('secretCode'));
             Configuration::updateValue('MONDIDO_PASSWORD', Tools::getValue('password'));
