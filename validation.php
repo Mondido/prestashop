@@ -4,17 +4,17 @@
 *
 *   Copyright @copyright 2016 Mondido
 *
-*   @category Payment
-*   @version 1.4.0
-*   @author Mondido
-*   @copyright 2016 Mondido
-*   @link
-*   @license
+*    @category Payment
+*    @version 1.4.0
+*    @author Mondido
+*    @copyright 2016 Mondido
+*    @link
+*    @license
 *
 *   Description:
-*
 *   Payment module mondidopay
 */
+
 require dirname(__FILE__).'/../../config/config.inc.php';
 include(dirname(__FILE__).'/../../header.php');
 require dirname(__FILE__).'/mondidopay.php';
