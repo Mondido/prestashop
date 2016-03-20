@@ -1,20 +1,20 @@
 <?php
 /**
- *  $Id$ mondidopayment Module
- *
- * Copyright @copyright 2016 Mondido
- *
- *  @category Payment
- *  @version 1.4.0
- *  @author Mondido
- *  @copyright 2016 Mondido
- *  @link
- *  @license
- *
- * Description:
- *
- * Payment module mondidopay
- *
+    *  $Id$ mondidopayment Module
+    *
+    * Copyright @copyright 2016 Mondido
+    *
+    *  @category Payment
+    *  @version 1.4.0
+    *  @author Mondido
+    *  @copyright 2016 Mondido
+    *  @link
+    *  @license
+    *
+    * Description:
+    *
+    * Payment module mondidopay
+    *
  */
 require dirname(__FILE__).'/../../config/config.inc.php';
 include(dirname(__FILE__).'/../../header.php');
@@ -22,9 +22,9 @@ require dirname(__FILE__).'/mondidopay.php';
 include_once(_PS_SWIFT_DIR_.'Swift/Message/Encoder.php');
 
 
-
-$currency = new Currency(intval(Tools::getIsset((Tools::getValue('currency_payement')) ? Tools::getValue('currency_payement') : $cookie->id_currency)));
-$total = floatval(number_format($cart->getOrderTotal(true, 3), 2, '.', ''));
+$cart = $this->context->cart;
+$currency = new Currency((int)Tools::getIsset((Tools::getValue('currency_payement')) ? Tools::getValue('currency_payement') : $this->context->cookie->id_currency));
+$total = (float) number_format($cart->getOrderTotal(true, 3), 2, '.', '');
 $transaction_id = Tools::getValue('transaction_id');
 $hash = Tools::getValue('hash');
 $payment_ref=Tools::getValue('payment_ref');
