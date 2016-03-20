@@ -15,14 +15,13 @@
 *   Payment module mondidopay
 */
 
-if(!defined('_PS_VERSION_')) {
-    exit;    
-}
+if (!defined('_PS_VERSION_')) {
+    exit;
+ }
 
 include_once(_PS_SWIFT_DIR_.'Swift/Message/Encoder.php');
 
-class mondidopay extends PaymentModule 
-{
+class mondidopay extends PaymentModule {
     protected $_errors = array();
     public function __construct() {
         $this->name = 'mondidopay';
@@ -35,18 +34,18 @@ class mondidopay extends PaymentModule
         $this->confirmUninstall = $this->l('Are you sure you want to uninstall?');
         $this->setModuleSettings();
         $this->need_instance = 1;
-        $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_); 
+        $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
         $this->bootstrap = true;
     
         if (!Configuration::get('mondidopay')) {
             $this->warning = $this->l('No name provided');
-        } 
+        }
     }
 
 
 
-    public function install(){
-        if(!parent::install() or !$this->registerHook('invoice') || !$this->registerHook('payment') || !$this->registerHook('paymentReturn')) {
+    public function install() {
+        if (!parent::install() or !$this->registerHook('invoice') || !$this->registerHook('payment') || !$this->registerHook('paymentReturn')) {
             return false;
         }
         return true;
@@ -54,7 +53,7 @@ class mondidopay extends PaymentModule
 
 
 
-    public function uninstall(){
+    public function uninstall() {
         Configuration::deleteByName('MONDIDO_MERCHANTID');
         Configuration::deleteByName('MONDIDO_SECRET');
         Configuration::deleteByName('MONDIDO_PASSWORD');
@@ -65,7 +64,7 @@ class mondidopay extends PaymentModule
         return parent::uninstall();
     }
 
-    public function hookPayment($params){
+    public function hookPayment($params) {
         $cart = $this->context->cart;
         $cart_details = $cart->getSummaryDetails(null, true);
         $billing_address = new Address($this->context->cart->id_address_invoice);
@@ -96,7 +95,7 @@ class mondidopay extends PaymentModule
     }
 
 
-    public function httpAuth(){
+    public function httpAuth() {
         $merchantID = $this->merchantID;
         $password = $this->password;
         $remoteurl = 'https://api.mondido.com/' ;
@@ -115,7 +114,7 @@ class mondidopay extends PaymentModule
 
     }
 
-    public function getContent(){
+    public function getContent() {
 
 
         if (Tools::getIsset(Tools::getValue('mondido_updateSettings'))){
@@ -142,7 +141,7 @@ class mondidopay extends PaymentModule
 
     }
 
-    public function setModuleSettings(){
+    public function setModuleSettings() {
         $this->merchantID = Configuration::get('MONDIDO_MERCHANTID');
         $this->secretCode = Configuration::get('MONDIDO_SECRET');
         $this->password	  = Configuration::get('MONDIDO_PASSWORD');
@@ -151,11 +150,11 @@ class mondidopay extends PaymentModule
     }
 
 
-    public function execPayment($cart){
+    public function execPayment($cart) {
 
 
 
-        if(!$this->active) {
+        if (!$this->active) {
             return;
         }
         $data = Tools::jsonEncode($cart->getProducts());
