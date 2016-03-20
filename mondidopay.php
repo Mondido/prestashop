@@ -15,15 +15,15 @@
 *   Payment module mondidopay
 */
 
-if(!defined('_PS_VERSION_'))
-    exit;
+if(!defined('_PS_VERSION_')) {
+    exit;    
+}
 
 include_once(_PS_SWIFT_DIR_.'Swift/Message/Encoder.php');
 
-class mondidopay extends PaymentModule {
-
+class mondidopay extends PaymentModule 
+{
     protected $_errors = array();
-
     public function __construct() {
         $this->name = 'mondidopay';
         parent::__construct();
@@ -34,22 +34,19 @@ class mondidopay extends PaymentModule {
         $this->tab = 'payments_gateways';
         $this->confirmUninstall = $this->l('Are you sure you want to uninstall?');
         $this->setModuleSettings();
-
-
-
-    $this->need_instance = 1;
-    $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_); 
-    $this->bootstrap = true;
- 
-    if (!Configuration::get('mondidopay'))      
-      $this->warning = $this->l('No name provided');
-      
+        $this->need_instance = 1;
+        $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_); 
+        $this->bootstrap = true;
+    
+        if (!Configuration::get('mondidopay')) {
+            $this->warning = $this->l('No name provided');
+        } 
     }
 
 
 
     public function install(){
-        if(!parent::install() OR  !$this->registerHook('invoice') || !$this->registerHook('payment') || !$this->registerHook('paymentReturn')){
+        if(!parent::install() or !$this->registerHook('invoice') || !$this->registerHook('payment') || !$this->registerHook('paymentReturn')) {
             return false;
         }
         return true;
@@ -158,8 +155,9 @@ class mondidopay extends PaymentModule {
 
 
 
-        if(!$this->active)
+        if(!$this->active) {
             return;
+        }
         $data = Tools::jsonEncode($cart->getProducts());
         $error_name=Tools::getValue('error_name');
         $cart = $this->context->cart;
@@ -184,11 +182,6 @@ class mondidopay extends PaymentModule {
             'this_path' => $this->_path,
             'this_path_ssl' => (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://').htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__.'modules/'.$this->name.'/'
         ));
-
         return $this->display(__FILE__, 'views/templates/hooks/payment_execution.tpl');
-
     }
-
 }
-
-?>

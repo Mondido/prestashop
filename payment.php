@@ -25,4 +25,3 @@ $cart = $context->cart;
 echo $mondidopay->execPayment($cart);
 
 include_once(dirname(__FILE__).'/../../footer.php');
-?>
