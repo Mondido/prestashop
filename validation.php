@@ -6,7 +6,7 @@
 *
 *    @category Payment
 *    @version 1.4.0
-*    @author Mondido
+*    @author    Mondido
 *    @copyright 2016 Mondido
 *    @link
 *    @license
