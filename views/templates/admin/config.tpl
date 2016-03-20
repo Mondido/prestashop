@@ -1,5 +1,3 @@
-
-
 {*
 *    $Id$ mondidopayment Module
 *
@@ -50,13 +48,13 @@
         Find your merchant settings here: <a href="https://mondido.com/en/settings" target="_blank">https://mondido.com/en/settings</a>
     </p>
 	<label for="merchantID">{l s='Merchant ID' mod='mondidopay'}</label>
-        <div class="margin-form"><input type="text" size="33" id="merchantID" name="merchantID" value="{$merchantID}" /></div>
+        <div class="margin-form"><input type="text" size="33" id="merchantID" name="merchantID" value="{$merchantID|escape:'htmlall':'UTF-8'}" /></div>
 	<label for="mondidoSecret">{l s='Secret' mod='mondidopay'}</label>
-		<div class="margin-form"><input type="text" size="33" name="secretCode" id="secretCode" value="{$secretCode}" /></div>
+		<div class="margin-form"><input type="text" size="33" name="secretCode" id="secretCode" value="{$secretCode|escape:'htmlall':'UTF-8'}" /></div>
 	<label for="mondidoPword">{l s='Password' mod='mondidopay'}</label>	
-		<div class="margin-form"><input type="password" size="33" name="password" id="password" value="{$password}" /></div>
+		<div class="margin-form"><input type="password" size="33" name="password" id="password" value="{$password|escape:'htmlall':'UTF-8'}" /></div>
 	<label for="mondidotest">{l s='Test (true/false)' mod='mondidopay'}</label>
-		<div class="margin-form" style="margin-bottom: 30px;"><input type="text" size="2" name="test" id="test" value="{$test}" /></div>
+		<div class="margin-form" style="margin-bottom: 30px;"><input type="text" size="2" name="test" id="test" value="{$test|escape:'htmlall':'UTF-8'}" /></div>
 	
 	<br /><center><input type="submit" name="mondido_updateSettings" value="{l s='Save Settings' mod='mondidopay'}" class="button" style="cursor: pointer; display:" /></center>	
 </fieldset>
