@@ -1,3 +1,18 @@
+{*
+*    $Id$ mondidopayment Module
+*
+*    Copyright @copyright 2016 Mondido
+*
+*    @category  Payment
+*    @version   1.4.0
+*    @author    Mondido
+*    @copyright 2016 Mondido
+*    @link      https://www.mondido.com
+*    @license   MIT
+*
+*   Description:
+*   Payment module mondidopay
+*}
 <h2>{l s='Order summary' mod='mondidopay'}</h2>
 
 {assign var='current_step' value='payment'}
