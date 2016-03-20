@@ -18,11 +18,11 @@
     <input type="hidden" name="customer_ref" value="{$customer->id|escape:'htmlall':'UTF-8'}">
     <input type="hidden" name="amount" value="{$total|escape:'htmlall':'UTF-8'}">
     <input type="hidden" name="currency" value="{$currency->iso_code|escape:'htmlall':'UTF-8'}">
-    <input type="hidden" name="hash" value="{$hash}">
-    <input type="hidden" name="merchant_id" value="{$merchantID}">
-    <input type="hidden" name="success_url" value="{$this_path_ssl}validation.php">
-    <input type="hidden" name="error_url" value="{$this_path_ssl}payment.php">
-    <input type="hidden" name="test" value="{$test}">
+    <input type="hidden" name="hash" value="{$hash|escape:'htmlall':'UTF-8'}">
+    <input type="hidden" name="merchant_id" value="{$merchantID|escape:'htmlall':'UTF-8'}">
+    <input type="hidden" name="success_url" value="{$this_path_ssl|escape:'htmlall':'UTF-8'}validation.php">
+    <input type="hidden" name="error_url" value="{$this_path_ssl|escape:'htmlall':'UTF-8'}payment.php">
+    <input type="hidden" name="test" value="{$test|escape:'htmlall':'UTF-8'}">
 
     <input type="hidden" name="metadata[products]" value="{$metadata|escape:'htmlall':'UTF-8'}" />
     <input type="hidden" name="metadata[customer][firstname]" value="{$address->firstname|escape:'htmlall':'UTF-8'}" />
@@ -49,7 +49,7 @@
 
 <p class="payment_module" style="width:570px;">
     <a id="mondido" href="#" title="{l s='Pay with your Credit Card' mod='mondidopay'}">
-        <img src="{$this_path}img/mondido-logo-plugin-small.png" alt="{l s='Pay with your Credit Card' mod='mondidopay'}" width="106" height="32"/>
+        <img src="{$this_path|escape:'htmlall':'UTF-8'}img/mondido-logo-plugin-small.png" alt="{l s='Pay with your Credit Card' mod='mondidopay'}" width="106" height="32"/>
         {l s='Pay with a credit card' mod='mondidopay'}
     </a>
 </p>
