@@ -17,7 +17,7 @@
 
 if (!defined('_PS_VERSION_')) {
     exit;
- }
+}
 
 include_once(_PS_SWIFT_DIR_.'Swift/Message/Encoder.php');
 
@@ -117,7 +117,7 @@ class mondidopay extends PaymentModule {
     public function getContent() {
 
 
-        if (Tools::getIsset(Tools::getValue('mondido_updateSettings'))){
+        if (Tools::getIsset(Tools::getValue('mondido_updateSettings'))) {
             Configuration::updateValue('MONDIDO_MERCHANTID', Tools::getValue('merchantID'));
             Configuration::updateValue('MONDIDO_SECRET', Tools::getValue('secretCode'));
             Configuration::updateValue('MONDIDO_PASSWORD', Tools::getValue('password'));
