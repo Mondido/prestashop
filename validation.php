@@ -29,7 +29,7 @@ $hash = Tools::getValue('hash');
 $payment_ref=Tools::getValue('payment_ref');
 
 $mondidopay = new mondidopay();
-$mondidopay->validateOrder($cart->id,  _PS_OS_PAYMENT_, $total, $mondidopay->displayName, NULL, NULL, $currency->id);
+$mondidopay->validateOrder($cart->id, _PS_OS_PAYMENT_, $total, $mondidopay->displayName, NULL, NULL, $currency->id);
 
 
 if (Tools::getIsset((Tools::getValue('transaction_id')))){
