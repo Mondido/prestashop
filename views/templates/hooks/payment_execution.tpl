@@ -22,7 +22,7 @@
 {if isset($error_name) && $error_name >= 0}
     <p class="warning">{l s='An error occured during processing of your payment.' mod='mondidopay'}</p>
 
-    <a href="{$link->getPageLink('order', true, NULL, "step=3")|escape:'html'}" class="button_large">{l s='Go Back to payment methods' mod='mondidopay'}</a>
+    <a href="{$link->getPageLink('order', true, NULL, "step=3")|escape:'htmlall':'UTF-8'}" class="button_large">{l s='Go Back to payment methods' mod='mondidopay'}</a>
 {else}
     <h3>{l s='Mondido Payment.' mod='mondidopay'}</h3>
 
@@ -43,11 +43,11 @@
     <input type="hidden" name="customer_ref" value="{$customer->id|escape:'htmlall':'UTF-8'}">
     <input type="hidden" name="amount" value="{$total|escape:'htmlall':'UTF-8'}">
     <input type="hidden" name="currency" value="{$currency->iso_code|escape:'htmlall':'UTF-8'}">
-    <input type="hidden" name="hash" value="{$hash}">
-    <input type="hidden" name="merchant_id" value="{$merchantID}">
-    <input type="hidden" name="success_url" value="{$this_path_ssl}validation.php">
-    <input type="hidden" name="error_url" value="{$this_path_ssl}payment.php">
-    <input type="hidden" name="test" value="{$test}">
+    <input type="hidden" name="hash" value="{$hash|escape:'htmlall':'UTF-8'}">
+    <input type="hidden" name="merchant_id" value="{$merchantID|escape:'htmlall':'UTF-8'}">
+    <input type="hidden" name="success_url" value="{$this_path_ssl|escape:'htmlall':'UTF-8'}validation.php">
+    <input type="hidden" name="error_url" value="{$this_path_ssl|escape:'htmlall':'UTF-8'}payment.php">
+    <input type="hidden" name="test" value="{$test|escape:'htmlall':'UTF-8'}">
 
     <input type="hidden" name="metadata[products]" value="{$metadata|escape:'htmlall':'UTF-8'}" />
     <input type="hidden" name="metadata[customer][firstname]" value="{$address->firstname|escape:'htmlall':'UTF-8'}" />
@@ -60,5 +60,5 @@
     <input type="hidden" name="metadata[customer][city]" value="{$address->city|escape:'htmlall':'UTF-8'}" />
     <input type="hidden" name="metadata[customer][country]" value="{$address->country|escape:'htmlall':'UTF-8'}" />
     <input type="hidden" name="metadata[customer][email]" value="{$customer->email|escape:'htmlall':'UTF-8'}" />
-    <a href="{$link->getPageLink('order', true, NULL, "step=3")|escape:'html'}" class="button_large">{l s='Other payment methods' mod='mondidopay'}</a><input type="submit" value="{l s='I confirm my order' mod='mondidopay'}" class="exclusive_large" style="float: right;"/>
+    <a href="{$link->getPageLink('order', true, NULL, "step=3")|escape:'htmlall':'UTF-8'}" class="button_large">{l s='Other payment methods' mod='mondidopay'}</a><input type="submit" value="{l s='I confirm my order' mod='mondidopay'}" class="exclusive_large" style="float: right;"/>
     </form>{/if}

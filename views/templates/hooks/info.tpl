@@ -13,7 +13,7 @@
 *   Description:
 *   Payment module mondidopay
 *}
-<img src="{$this_path}/img/mondido-logo-plugin.png" alt="{l s='Pay with your Credit Card using Mondido Pay' mod='mondidopay'}" width="231" height="58"/>
+<img src="{$this_path|escape:'htmlall':'UTF-8'}/img/mondido-logo-plugin.png" alt="{l s='Pay with your Credit Card using Mondido Pay' mod='mondidopay'}" width="231" height="58"/>
 <h2>{l s='Mondido Payment Checkout 1.0' mod='mondidopay'}</h2>
 <fieldset>
 	<legend>Help</legend>
@@ -41,4 +41,3 @@
     </p>
 
 </fieldset>
-
