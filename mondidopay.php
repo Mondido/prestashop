@@ -30,7 +30,7 @@ if (!defined('_PS_VERSION_')) {
 
 include_once(_PS_SWIFT_DIR_.'Swift/Message/Encoder.php');
 
-class Mondidopay extends PaymentModule 
+class mondidopay extends PaymentModule 
 {
     protected $_errors = array();
     public function __construct() 
