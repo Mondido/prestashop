@@ -1,32 +1,18 @@
 {*
-*  $Id$
-*  mondidopayment Module
-* 
-* Copyright @copyright 2014 3o-BPO
-* 
-* @category Payment
-* @version 1.0
-* @copyright 01.06.2014, 3o-BPO
-* @author Jeeky Vincent Mojica, <www.3obpo.com> 
-* @link
-* @license
-* 
-* Description:
-* 
-* Payment module mondidopay
-* 
-* --
-* 
-* This source file is subject to the Open Software License (OSL 3.0)
-* that is bundled with this package in the file LICENSE.
-* It is also available through the world-wide-web at this URL:
-* http://opensource.org/licenses/osl-3.0.php
-* If you did not receive a copy of the license and are unable to
-* obtain it through the world-wide-web, please send an email
-* to license@touchdesign.de so we can send you a copy immediately.
-* 
+*    $Id$ mondidopayment Module
+*
+*    Copyright @copyright 2016 Mondido
+*
+*    @category  Payment
+*    @version   1.4.0
+*    @author    Mondido
+*    @copyright 2016 Mondido
+*    @link      https://www.mondido.com
+*    @license   MIT
+*
+*   Description:
+*   Payment module mondidopay
 *}
-
 <img src="{$this_path}/img/mondido-logo-plugin.png" alt="{l s='Pay with your Credit Card using Mondido Pay' mod='mondidopay'}" width="231" height="58"/>
 <h2>{l s='Mondido Payment Checkout 1.0' mod='mondidopay'}</h2>
 <fieldset>

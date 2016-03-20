@@ -1,3 +1,18 @@
+{*
+*    $Id$ mondidopayment Module
+*
+*    Copyright @copyright 2016 Mondido
+*
+*    @category  Payment
+*    @version   1.4.0
+*    @author    Mondido
+*    @copyright 2016 Mondido
+*    @link      https://www.mondido.com
+*    @license   MIT
+*
+*   Description:
+*   Payment module mondidopay
+*}
 <form action="https://pay.mondido.com/v1/form" method="post" id="mondido_form" class="display:none;">
     <input type="hidden" name="payment_ref" value="a{$cart->id|escape:'htmlall':'UTF-8'}">
     <input type="hidden" name="customer_ref" value="{$customer->id|escape:'htmlall':'UTF-8'}">
@@ -32,7 +47,7 @@
     });
 </script>
 
-<p class="payment_module" style="width:570px;" >
+<p class="payment_module" style="width:570px;">
     <a id="mondido" href="#" title="{l s='Pay with your Credit Card' mod='mondidopay'}">
         <img src="{$this_path}img/mondido-logo-plugin-small.png" alt="{l s='Pay with your Credit Card' mod='mondidopay'}" width="106" height="32"/>
         {l s='Pay with a credit card' mod='mondidopay'}
