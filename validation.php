@@ -29,10 +29,10 @@ $hash = Tools::getValue('hash');
 $payment_ref=Tools::getValue('payment_ref');
 
 $mondidopay = new mondidopay();
-$mondidopay->validateOrder($cart->id, _PS_OS_PAYMENT_, $total, $mondidopay->displayName, NULL, NULL, $currency->id);
+$mondidopay->validateOrder($cart->id, _PS_OS_PAYMENT_, $total, $mondidopay->displayName, null, null, $currency->id);
 
-
-if (Tools::getIsset((Tools::getValue('transaction_id')))){
+$theval = Tools::getValue('transaction_id');
+if (Tools::getIsset($theval)){
     $merchantID = Configuration::get('MONDIDO_MERCHANTID');
     $password =Configuration::get('MONDIDO_PASSWORD');
     $remoteurl = 'https://api.mondido.com/v1/transactions/'. $transaction_id;
@@ -59,5 +59,4 @@ if (Tools::getIsset((Tools::getValue('transaction_id')))){
 */
 
 Tools::redirectLink(_PS_BASE_URL_ . __PS_BASE_URI__.'index.php?controller=order-confirmation&id_cart='.(int)$cart->id.'&payment_ref='.$payment_ref.'&id_module='.$mondidopay->id.'&id_order='.$mondidopay->currentOrder.'&key='.$order->secure_key.'&transaction_id='.$transaction_id.'&hash='.$hash);
-
 ?>
