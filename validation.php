@@ -1,15 +1,15 @@
 <?php
 /**
-*   $Id$ mondidopayment Module
+*    $Id$ mondidopayment Module
 *
-*   Copyright @copyright 2016 Mondido
+*    Copyright @copyright 2016 Mondido
 *
-*    @category Payment
-*    @version 1.4.0
+*    @category  Payment
+*    @version   1.4.0
 *    @author    Mondido
 *    @copyright 2016 Mondido
-*    @link
-*    @license
+*    @link      https://www.mondido.com
+*    @license   MIT
 *
 *   Description:
 *   Payment module mondidopay
