@@ -1,22 +1,20 @@
 <?php
 /**
- *  $Id$
- *  mondidopayment Module
- *
- * Copyright @copyright 2016 Mondido
- *
- * @category Payment
- * @version 1.4.0
- * @copyright 2016 Mondido
- * @author Mondido
- * @link
- * @license
- *
- * Description:
- *
- * Payment module mondidopay
- *
- */
+*    $Id$ mondidopayment Module
+*
+*    Copyright @copyright 2016 Mondido
+*
+*    @category  Payment
+*    @version   1.4.0
+*    @author    Mondido
+*    @copyright 2016 Mondido
+*    @link      https://www.mondido.com
+*    @license   MIT
+*
+*   Description:
+*   Payment module mondidopay
+*/
+
 if(!defined('_PS_VERSION_'))
     exit;
 
