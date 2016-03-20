@@ -22,7 +22,8 @@ include(dirname(__FILE__).'/../../header.php');
 include(dirname(__FILE__).'/mondidopay.php');
 
 $mondidopay = new mondidopay();
-$cart = $this->context->cart;
+$context = Context::getContext();
+$cart = $context->cart;
 echo $mondidopay->execPayment($cart);
 
 include_once(dirname(__FILE__).'/../../footer.php');
