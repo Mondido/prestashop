@@ -2,7 +2,7 @@
 <module>
 	<name>mondidopay</name>
 	<displayName><![CDATA[MONDIDO PAYMENTS]]></displayName>
-	<version><![CDATA[1.4]]></version>
+	<version><![CDATA[1.4.0]]></version>
 	<description><![CDATA[Online payment by Mondido]]></description>
 	<author><![CDATA[Mondido]]></author>
 	<tab><![CDATA[payments_gateways]]></tab>

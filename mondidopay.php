@@ -6,7 +6,7 @@
  * Copyright @copyright 2016 Mondido
  *
  * @category Payment
- * @version 1.4
+ * @version 1.4.0
  * @copyright 2016 Mondido
  * @author Mondido
  * @link
@@ -30,7 +30,7 @@ class mondidopay extends PaymentModule {
         $this->displayName = $this->l('MONDIDO PAYMENTS');
         $this->description = $this->l('Online payment by Mondido');
         $this->author = 'Mondido';
-        $this->version = '1.4';
+        $this->version = '1.4.0';
         $this->tab = 'payments_gateways';
         $this->confirmUninstall = $this->l('Are you sure you want to uninstall?');
         $this->setModuleSettings();
@@ -69,7 +69,6 @@ class mondidopay extends PaymentModule {
     }
 
     public function hookPayment($params){
-        global $smarty;
         $cart = $this->context->cart;
         $cart_details = $cart->getSummaryDetails(null, true);
         $billing_address = new Address($this->context->cart->id_address_invoice);
@@ -78,7 +77,7 @@ class mondidopay extends PaymentModule {
         $error_name = $_GET['error_name'];
 
 
-        $smarty->assign(array(
+        $this->context->smarty->assign(array(
             'error_name' =>  $error_name,
             'merchantID' => $this->merchantID,
             'secretCode' => $this->secretCode,
@@ -134,9 +133,8 @@ class mondidopay extends PaymentModule {
             $this->httpAuth();
         }
 
-        global $smarty;
 
-        $smarty->assign(array(
+        $this->context->smarty->assign(array(
             'merchantID' => $this->merchantID,
             'secretCode' => $this->secretCode,
             'password'	=> $this->password,
@@ -167,9 +165,8 @@ class mondidopay extends PaymentModule {
         $cart = $this->context->cart;
         $cart_details = $cart->getSummaryDetails(null, true);
         $billing_address = new Address($this->context->cart->id_address_invoice);
-        global $cookie, $smarty;
 
-        $smarty->assign(array(
+        $this->context->smarty->assign(array(
             'error_name' =>  $error_name,
             'merchantID' => $this->merchantID,
             'secretCode' => $this->secretCode,

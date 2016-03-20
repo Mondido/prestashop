@@ -45,5 +45,5 @@
     <input type="hidden" name="metadata[customer][city]" value="{$address->city|escape:'htmlall':'UTF-8'}" />
     <input type="hidden" name="metadata[customer][country]" value="{$address->country|escape:'htmlall':'UTF-8'}" />
     <input type="hidden" name="metadata[customer][email]" value="{$customer->email|escape:'htmlall':'UTF-8'}" />
-    <a href="{$link->getPageLink('order', true, NULL, "step=3")|escape:'html'}" class="button_large">{l s='Other payment methods' mod='mondidopay'}</a><input type="submit" value="{l s='I confirm my order' mod='mondido'}" class="exclusive_large" style="float: right;"/>
+    <a href="{$link->getPageLink('order', true, NULL, "step=3")|escape:'html'}" class="button_large">{l s='Other payment methods' mod='mondidopay'}</a><input type="submit" value="{l s='I confirm my order' mod='mondidopay'}" class="exclusive_large" style="float: right;"/>
     </form>{/if}

@@ -3,28 +3,18 @@
  *  $Id$
  *  mondidopayment Module
  *
- * Copyright @copyright 2014 3o-BPO
+ * Copyright @copyright 2016 Mondido
  *
  * @category Payment
- * @version 1.0
- * @copyright 01.06.2014, 3o-BPO
- * @author Jeeky Vincent Mojica, <www.3obpo.com>
+ * @version 1.4.0
+ * @copyright 2016 Mondido
+ * @author Mondido
  * @link
  * @license
  *
  * Description:
  *
  * Payment module mondidopay
- *
- * --
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.
- * It is also available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
- * If you did not receive a copy of the license and are unable to
- * obtain it through the world-wide-web, please send an email
- * to license@touchdesign.de so we can send you a copy immediately.
  *
  */
 
@@ -35,35 +25,17 @@ require dirname(__FILE__).'/mondidopay.php';
 
 
 
-$currency = new Currency(intval(isset($_POST['currency_payement']) ? $_POST['currency_payement'] : $cookie->id_currency));
+$currency = new Currency(intval(Tools::getIsset((Tools::getValue('currency_payement') ? Tools::getValue('currency_payement') : $cookie->id_currency));
 $total = floatval(number_format($cart->getOrderTotal(true, 3), 2, '.', ''));
-$transaction_id = $_GET['transaction_id'];
-$hash = $_GET['hash'];
-$payment_ref=$_GET['payment_ref'];
+$transaction_id = Tools::getValue('transaction_id');
+$hash = Tools::getValue('hash');
+$payment_ref=Tools::getValue('payment_ref');
 
 $mondidopay = new mondidopay();
 $mondidopay->validateOrder($cart->id,  _PS_OS_PAYMENT_, $total, $mondidopay->displayName, NULL, NULL, $currency->id);
-/*
-function httpAuth2(){
-		$merchantID = $this->merchantID;
-		$password = $this->password;
-		$remoteurl = 'https://api.mondido.com/v1/transactions/'. $transaction_id;
-		
-		$opts = array('http' => array('method' => "GET",
-			'header' => "Authorization: Basic " . base64_encode("$merchantID:$password")
-		));
-		
-		$context = stream_context_create($opts);
-		
-		$file = file_get_contents($remoteurl, false, $context);
-		 $data = (array) json_decode($file, true);
-		 //$data = implode(',', array_values($data));
-		 return $data;
-		 
-	}
-*/
 
-if (isset($_GET['transaction_id'])){
+
+if (Tools::getIsset((Tools::getValue('transaction_id'))){
     $merchantID = Configuration::get('MONDIDO_MERCHANTID');
     $password =Configuration::get('MONDIDO_PASSWORD');
     $remoteurl = 'https://api.mondido.com/v1/transactions/'. $transaction_id;
@@ -74,7 +46,7 @@ if (isset($_GET['transaction_id'])){
 
     $context = stream_context_create($opts);
 
-    $file = file_get_contents($remoteurl, false, $context);
+    $file = Tools::file_get_contents($remoteurl, false, $context);
     $data = (array) json_decode($file, true);
     $order = new Order($mondidopay->currentOrder);
     $payments = $order->getOrderPaymentCollection();

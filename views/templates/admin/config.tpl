@@ -1,5 +1,5 @@
 <img src="{$this_path}/img/mondido-logo-plugin.png" alt="{l s='Pay with your Credit Card using Mondido Pay' mod='mondidopay'}" width="231" height="58"/>
-<h2>{l s='Mondido Payment Checkout 1.0' mod='mondidopay'}</h2>
+<h2>{l s='Mondido Payment Checkout 1.4.0' mod='mondidopay'}</h2>
 <fieldset>
     <legend>Help</legend>
     <h3>Welcome to Mondido Payments</h3>
@@ -43,4 +43,4 @@
 	
 	<br /><center><input type="submit" name="mondido_updateSettings" value="{l s='Save Settings' mod='mondidopay'}" class="button" style="cursor: pointer; display:" /></center>	
 </fieldset>
-</form
+</form>
