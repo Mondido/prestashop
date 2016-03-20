@@ -1,5 +1,20 @@
 
 
+{*
+*    $Id$ mondidopayment Module
+*
+*    Copyright @copyright 2016 Mondido
+*
+*    @category  Payment
+*    @version   1.4.0
+*    @author    Mondido
+*    @copyright 2016 Mondido
+*    @link      https://www.mondido.com
+*    @license   MIT
+*
+*   Description:
+*   Payment module mondidopay
+*}
 <img src="{$this_path|escape:'htmlall':'UTF-8'}/img/mondido-logo-plugin.png" alt="{l s='Pay with your Credit Card using Mondido Pay' mod='mondidopay'}" width="231" height="58"/>
 <h2>{l s='Mondido Payment Checkout 1.4.0' mod='mondidopay'}</h2>
 <fieldset>
