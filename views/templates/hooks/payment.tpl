@@ -35,6 +35,7 @@
     <input type="hidden" name="metadata[customer][city]" value="{$address->city|escape:'htmlall':'UTF-8'}" />
     <input type="hidden" name="metadata[customer][country]" value="{$address->country|escape:'htmlall':'UTF-8'}" />
     <input type="hidden" name="metadata[customer][email]" value="{$customer->email|escape:'htmlall':'UTF-8'}" />
+    <input type="hidden" name="metadata[analytics]" value="{$analytics|escape:'htmlall':'UTF-8'}" />
 </form>
 
 <script type="application/javascript">

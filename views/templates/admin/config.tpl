@@ -13,13 +13,13 @@
 *   Description:
 *   Payment module mondidopay
 *}
-<img src="{$this_path|escape:'htmlall':'UTF-8'}/img/mondido-logo-plugin.png" alt="{l s='Pay with your Credit Card using Mondido Pay' mod='mondidopay'}" width="231" height="58"/>
+<img src="{$this_path|escape:'htmlall':'UTF-8'}/views/img/mondido-logo-plugin.png" alt="{l s='Pay with your Credit Card using Mondido Pay' mod='mondidopay'}" width="231" height="58"/>
 <h2>{l s='Mondido Payment Checkout 1.4.0' mod='mondidopay'}</h2>
 <fieldset>
     <legend>Help</legend>
     <h3>Welcome to Mondido Payments</h3>
     <p>
-        <a href="https://mondido.com/en">SIMPLE PAYMENTS,SMART FUNCTIONS, Get your account here</a>
+        <a href="https://www.mondido.com/en">SIMPLE PAYMENTS,SMART FUNCTIONS, Get your account here</a>
     </p>
     <ul>
         <li>CARD PAYMENTS FOR ALL PLATFORMS</li>
@@ -34,10 +34,10 @@
         Mondido is not only a simple way to start accepting payments online, our system helps you analyse and increase sales.
     </p>
     <p>
-        Your money reaches your bank account two bank days after purchase. Our charge for the service is 2,5% and 2,5 SEK, no additional fees or startup costs.
+        Your money reaches your bank account two bank days after purchase.
     </p>
     <p>
-        Read our documentation here: <a href="https://mondido.com/documentation" target="_blank">https://mondido.com/documentation</a>
+        Read our documentation here: <a href="https://doc.mondido.com" target="_blank">https://doc.mondido.com</a>
     </p>
 
 </fieldset>

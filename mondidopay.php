@@ -83,11 +83,30 @@ class mondidopay extends PaymentModule
         $cart = $this->context->cart;
         $cart_details = $cart->getSummaryDetails(null, true);
         $billing_address = new Address($this->context->cart->id_address_invoice);
-        $data = Tools::jsonEncode($cart->getProducts());
+        $prod_data = $cart->getProducts();
+        
         $error_name = Tools::getValue('error_name');
         $total = number_format($cart->getOrderTotal(true, 3), 2, '.', '');
-
+        
+        $platform_version = _PS_VERSION_;
+        $platform_type = 'prestashop';
+        $lang_version = phpversion();
+        $plugin_version = '1.4.0';
+        
+        $analytics = [];
+        $google = [];
+            
+        if(isset($_COOKIE['m_ad_code'])) {
+            $google["ad_code"] = $_COOKIE['m_ad_code'];
+        }
+        if(isset($_COOKIE['m_ref_str'])) {
+            $analytics["referrer"] = $_COOKIE['m_ref_str'];
+        }
+        
+        $analytics['google'] = $google;
+        $data = Tools::jsonEncode($prod_data);
         $this->context->smarty->assign(array(
+            'analytics' => Tools::jsonEncode($analytics),
             'error_name' =>  $error_name,
             'merchantID' => $this->merchantID,
             'secretCode' => $this->secretCode,
@@ -124,9 +143,7 @@ class mondidopay extends PaymentModule
 
         $file = Tools::file_get_contents($remoteurl, false, $context);
         $data = (array) Tools::jsonDecode($file, true);
-        //$data = implode(',', array_values($data));
         return $data;
-
     }
 
     public function getContent() {
