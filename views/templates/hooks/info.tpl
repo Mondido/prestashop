@@ -19,7 +19,7 @@
 	<legend>Help</legend>
 	<h3>Welcome to Mondido Payments</h3>
 	<p>
-        <a href="https://mondido.com/en">SIMPLE PAYMENTS,SMART FUNCTIONS, Get your account here</a>
+        <a href="https://www.mondido.com/en">SIMPLE PAYMENTS,SMART FUNCTIONS, Get your account here</a>
 	</p>
     <ul>
         <li>CARD PAYMENTS FOR ALL PLATFORMS</li>

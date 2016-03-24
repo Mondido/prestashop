@@ -147,9 +147,7 @@ class mondidopay extends PaymentModule
     }
 
     public function getContent() {
-
-
-        if (Tools::getIsset(Tools::getValue('mondido_updateSettings'))) 
+        if (Tools::getValue('mondido_updateSettings')) 
         {
             Configuration::updateValue('MONDIDO_MERCHANTID', Tools::getValue('merchantID'));
             Configuration::updateValue('MONDIDO_SECRET', Tools::getValue('secretCode'));
@@ -159,9 +157,8 @@ class mondidopay extends PaymentModule
             Configuration::updateValue('MONDIDO_ERROR_URL', Tools::getValue('error_url'));
 
             $this->setModuleSettings();
-            $this->httpAuth();
+//            $this->httpAuth();
         }
-
 
         $this->context->smarty->assign(array(
             'merchantID' => $this->merchantID,
