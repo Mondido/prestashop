@@ -1,4 +1,4 @@
-PrestaShop plugin 1.3
+PrestaShop plugin 1.5
 ==========
 
 Mondido Payments plugin for PrestaShop  
@@ -8,6 +8,8 @@ Get your mondido account at: https://mondido.com
 
 
 Changelog:   
+1.5 Added items to payment body
+1.4 Fixed bugs
 1.3 Updated hash recipe   
 1.2 Added auto submit on the middle step after the checkout    
 1.1 Added support for One-page checkout   
