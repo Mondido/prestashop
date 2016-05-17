@@ -3,8 +3,9 @@ PrestaShop plugin 1.5
 
 Mondido Payments plugin for PrestaShop  
 
+Download file: https://s3-eu-west-1.amazonaws.com/mondido/bin/mondido-prestashop-1.5.zip
 Download the ZIP and upload it into your PrestaShop Plugin page.
-Get your mondido account at: https://mondido.com
+Get your mondido account at: https://www.mondido.com/en
 
 
 Changelog:   
