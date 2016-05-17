@@ -4,7 +4,7 @@
 *    Copyright @copyright 2016 Mondido
 *
 *    @category  Payment
-*    @version   1.4.0
+*    @version   1.5.0
 *    @author    Mondido
 *    @copyright 2016 Mondido
 *    @link      https://www.mondido.com
@@ -51,7 +51,7 @@
 
 <p class="payment_module" style="width:570px;">
     <a id="mondido" href="#" title="{l s='Pay with your Credit Card' mod='mondidopay'}">
-        <img src="{$this_path|escape:'htmlall':'UTF-8'}views/img/mondido-logo-plugin-small.png" alt="{l s='Pay with your Credit Card' mod='mondidopay'}" width="106" height="32"/>
+        <img src="https://cdn-02.mondido.com/www/img/mondido-2015.png" alt="{l s='Pay with your Credit Card' mod='mondidopay'}" width="106" height="32"/>
         {l s='Pay with a credit card' mod='mondidopay'}
     </a>
 </p>

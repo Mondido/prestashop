@@ -1,5 +1,5 @@
-<img src="{$this_path}/img/mondido-logo-plugin.png" alt="{l s='Pay with your Credit Card using Mondido Pay' mod='mondidopay'}" width="231" height="58"/>
-<h2>{l s='Mondido Payment Checkout 1.0' mod='mondidopay'}</h2>
+<img src="https://cdn-02.mondido.com/www/img/mondido-2015.png" alt="{l s='Pay with your Credit Card using Mondido Pay' mod='mondidopay'}" width="231"/>
+<h2>{l s='Mondido Payment Checkout 1.5' mod='mondidopay'}</h2>
 <fieldset>
     <legend>Help</legend>
     <h3>Welcome to Mondido Payments</h3>
@@ -19,10 +19,10 @@
         Mondido is not only a simple way to start accepting payments online, our system helps you analyse and increase sales.
     </p>
     <p>
-        Your money reaches your bank account two bank days after purchase. Our charge for the service is 2,5% and 2,5 SEK, no additional fees or startup costs.
+        Your money reaches your bank account two bank days after purchase. Our charge is simple with no additional fees or startup costs.
     </p>
     <p>
-        Read our documentation here: <a href="https://mondido.com/documentation" target="_blank">https://mondido.com/documentation</a>
+        Read our documentation here: <a href="https://doc.mondido.com" target="_blank">https://doc.mondido.com</a>
     </p>
 
 </fieldset>
@@ -30,7 +30,7 @@
 <fieldset>
 	<legend>{l s='Settings' mod='mondidopay'}</legend>
     <p>
-        Find your merchant settings here: <a href="https://mondido.com/en/settings" target="_blank">https://mondido.com/en/settings</a>
+        Find your merchant settings here: <a href="https://admin.mondido.com/en/settings" target="_blank">https://admin.mondido.com/en/settings</a>
     </p>
 	<label for="merchantID">{l s='Merchant ID' mod='mondidopay'}</label>
         <div class="margin-form"><input type="text" size="33" id="merchantID" name="merchantID" value="{$merchantID}" /></div>

@@ -39,7 +39,7 @@ class mondidopay extends PaymentModule
         $this->displayName = $this->l('MONDIDO PAYMENTS');
         $this->description = $this->l('Online payment by Mondido');
         $this->author = 'Mondido';
-        $this->version = '1.4.0';
+        $this->version = '1.5.0';
         $this->tab = 'payments_gateways';
         $this->confirmUninstall = $this->l('Are you sure you want to uninstall?');
         $this->setModuleSettings();
@@ -91,7 +91,7 @@ class mondidopay extends PaymentModule
         $platform_version = _PS_VERSION_;
         $platform_type = 'prestashop';
         $lang_version = phpversion();
-        $plugin_version = '1.4.0';
+        $plugin_version = '1.5.0';
         
         $analytics = [];
         $google = [];
