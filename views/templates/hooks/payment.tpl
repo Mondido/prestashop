@@ -14,10 +14,10 @@
 *   Payment module mondidopay
 *}
 <form action="https://pay.mondido.com/v1/form" method="post" id="mondido_form" class="display:none;">
-    <input type="hidden" name="payment_ref" value="a{$cart->id|escape:'htmlall':'UTF-8'}">
+    <input type="hidden" name="payment_ref" value="{$payment_ref|escape:'htmlall':'UTF-8'}">
     <input type="hidden" name="customer_ref" value="{$customer->id|escape:'htmlall':'UTF-8'}">
     <input type="hidden" name="amount" value="{$total|escape:'htmlall':'UTF-8'}">
-    <input type="hidden" name="currency" value="{$currency|escape:'htmlall':'UTF-8'}">
+    <input type="hidden" name="currency" value="{$currency->iso_code|escape:'htmlall':'UTF-8'}">
     <input type="hidden" name="hash" value="{$hash|escape:'htmlall':'UTF-8'}">
     <input type="hidden" name="merchant_id" value="{$merchantID|escape:'htmlall':'UTF-8'}">
     <input type="hidden" name="success_url" value="{$this_path_ssl|escape:'htmlall':'UTF-8'}validation.php">

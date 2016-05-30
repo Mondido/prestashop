@@ -5,7 +5,7 @@
 * Copyright @copyright 2014 3o-BPO
 * 
 * @category Payment
-* @version 1.0
+* @version 1.5.1
 * @copyright 01.06.2014, 3o-BPO
 * @author Jeeky Vincent Mojica, <www.3obpo.com> 
 * @link
@@ -31,7 +31,6 @@
 <h2>{l s='Mondido Payment Checkout 1.0' mod='mondidopay'}</h2>
 <fieldset>
 	<legend>Help</legend>
-	<h3>Welcome to Mondido Payments</h3>
 	<p>
         <a href="https://mondido.com/en">SIMPLE PAYMENTS,SMART FUNCTIONS, Get your account here</a>
 	</p>

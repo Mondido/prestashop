@@ -39,7 +39,7 @@ class mondidopay extends PaymentModule
         $this->displayName = $this->l('MONDIDO PAYMENTS');
         $this->description = $this->l('Online payment by Mondido');
         $this->author = 'Mondido';
-        $this->version = '1.5.0';
+        $this->version = '1.5.1';
         $this->tab = 'payments_gateways';
         $this->confirmUninstall = $this->l('Are you sure you want to uninstall?');
         $this->setModuleSettings();
@@ -73,6 +73,7 @@ class mondidopay extends PaymentModule
         Configuration::deleteByName('MONDIDO_SECRET');
         Configuration::deleteByName('MONDIDO_PASSWORD');
         Configuration::deleteByName('MONDIDO_TEST');
+        Configuration::deleteByName('MONDIDO_DEV');
         Configuration::deleteByName('MONDIDO_SUCCESS_URL');
         Configuration::deleteByName('MONDIDO_ERROR_URL');
 
@@ -91,7 +92,7 @@ class mondidopay extends PaymentModule
         $platform_version = _PS_VERSION_;
         $platform_type = 'prestashop';
         $lang_version = phpversion();
-        $plugin_version = '1.5.0';
+        $plugin_version = '1.5.1';
         
         $analytics = [];
         $google = [];
@@ -133,8 +134,17 @@ class mondidopay extends PaymentModule
         $currency =  new Currency((int)$cart->id_currency);
         $analytics['google'] = $google;
         $data = Tools::jsonEncode($prod_data);
+        if($this->dev == 'true')
+        {
+            $payment_ref =  'dev'.$cart->id;
+        }
+        else
+        {
+            $payment_ref =  'apa'.$cart->id;
+        }
         
         $form_data = array(
+            'payment_ref' => $payment_ref,
             'items' => Tools::jsonEncode($items),
             'analytics' => Tools::jsonEncode($analytics),
             'error_name' =>  $error_name,
@@ -144,7 +154,7 @@ class mondidopay extends PaymentModule
             'test'	=> $this->test,
             'total' => $total,
             'subtotal' => number_format($cart_details['total_price_without_tax'], 2, '.', ''),
-            'currency' => $currency->iso_code,
+            'currency' => $currency,
             'custom' => Tools::jsonEncode(array('id_cart' => $cart->id, 'hash' => $cart->nbProducts())),
             'customer' => $this->context->customer,
             'metadata'=> $data,
@@ -152,7 +162,7 @@ class mondidopay extends PaymentModule
             'address'	=> $billing_address,
             'hash'	=> md5(
                 $this->merchantID .
-                'a'.$cart->id .
+                $payment_ref .
                 $this->context->customer->id .
                 $total .
                 strtolower($currency->iso_code) .
@@ -192,11 +202,11 @@ class mondidopay extends PaymentModule
             Configuration::updateValue('MONDIDO_SECRET', Tools::getValue('secretCode'));
             Configuration::updateValue('MONDIDO_PASSWORD', Tools::getValue('password'));
             Configuration::updateValue('MONDIDO_TEST', Tools::getValue('test'));
+            Configuration::updateValue('MONDIDO_DEV', Tools::getValue('dev'));
             Configuration::updateValue('MONDIDO_SUCCESS_URL', Tools::getValue('success_url'));
             Configuration::updateValue('MONDIDO_ERROR_URL', Tools::getValue('error_url'));
 
             $this->setModuleSettings();
-//            $this->httpAuth();
         }
 
         $this->context->smarty->assign(array(
@@ -204,6 +214,7 @@ class mondidopay extends PaymentModule
             'secretCode' => $this->secretCode,
             'password'	=> $this->password,
             'test'	=> $this->test,
+            'dev'	=> $this->dev,
             'this_path' => $this->_path,
             'this_path_ssl' => Configuration::get('PS_FO_PROTOCOL').$_SERVER['HTTP_HOST'].__PS_BASE_URI__."modules/{$this->name}/"));
         return $this->display(__FILE__, 'views/templates/admin/config.tpl');
@@ -215,14 +226,11 @@ class mondidopay extends PaymentModule
         $this->secretCode = Configuration::get('MONDIDO_SECRET');
         $this->password	  = Configuration::get('MONDIDO_PASSWORD');
         $this->test		  = Configuration::get('MONDIDO_TEST');
-
+        $this->dev        = Configuration::get('MONDIDO_DEV');
     }
 
 
     public function execPayment($cart) {
-
-
-
         if (!$this->active) {
             return;
         }
@@ -233,7 +241,16 @@ class mondidopay extends PaymentModule
         $billing_address = new Address($this->context->cart->id_address_invoice);
         $total = number_format($cart->getOrderTotal(true, 3), 2, '.', '');
         $currency = new Currency((int)$cart->id_currency);
+        if($this->dev == 'true')
+        {
+            $payment_ref =  'dev'.$cart->id;
+        }
+        else
+        {
+            $payment_ref =  'apa'.$cart->id;
+        }        
         $this->context->smarty->assign(array(
+            'payment_ref' => $payment_ref,
             'error_name' =>  $error_name,
             'merchantID' => $this->merchantID,
             'secretCode' => $this->secretCode,
@@ -241,7 +258,7 @@ class mondidopay extends PaymentModule
             'test'	=> $this->test,
             'total' => $total,
             'subtotal' => number_format($cart_details['total_price_without_tax'], 2, '.', ''),
-            'currency' => $currency->iso_code,
+            'currency' => $currency,
             'custom' => Tools::jsonEncode(array('id_cart' => $cart->id, 'hash' => $cart->nbProducts())),
             'customer' => $this->context->customer,
             'metadata'=> $data,
@@ -249,7 +266,7 @@ class mondidopay extends PaymentModule
             'address'	=> $billing_address,
             'hash'	=> md5(
                 $this->merchantID .
-                'a'.$cart->id .
+                $payment_ref .
                 $this->context->customer->id .
                 $total .
                 strtolower($currency->iso_code) .

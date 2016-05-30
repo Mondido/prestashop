@@ -1,9 +1,8 @@
 <img src="https://cdn-02.mondido.com/www/img/mondido-2015.png" alt="{l s='Pay with your Credit Card using Mondido Pay' mod='mondidopay'}" width="231"/>
-<h2>{l s='Mondido Payment Checkout 1.5' mod='mondidopay'}</h2>
+<h2>{l s='Mondido Payment Checkout 1.5.1' mod='mondidopay'}</h2>
 <fieldset>
     <legend>Help</legend>
-    <h3>Welcome to Mondido Payments</h3>
-    <p>
+   <p>
         <a href="https://mondido.com/en">SIMPLE PAYMENTS,SMART FUNCTIONS, Get your account here</a>
     </p>
     <ul>
@@ -39,7 +38,9 @@
 	<label for="mondidoPword">{l s='Password' mod='mondidopay'}</label>	
 		<div class="margin-form"><input type="password" size="33" name="password" id="password" value="{$password}" /></div>
 	<label for="mondidotest">{l s='Test (true/false)' mod='mondidopay'}</label>
-		<div class="margin-form" style="margin-bottom: 30px;"><input type="text" size="2" name="test" id="test" value="{$test}" /></div>
+		<div class="margin-form" style=""><input type="text" size="2" name="test" id="test" value="{$test}" /></div>
+	<label for="mondidodev">{l s='Development (true/false)' mod='mondidopay'}</label>
+		<div class="margin-form" style="margin-bottom: 30px;"><input type="text" size="2" name="dev" id="dev" value="{$dev}" /></div>
 	
 	<br /><center><input type="submit" name="mondido_updateSettings" value="{l s='Save Settings' mod='mondidopay'}" class="button" style="cursor: pointer; display:" /></center>	
 </fieldset>
