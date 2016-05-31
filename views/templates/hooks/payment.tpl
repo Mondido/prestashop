@@ -4,7 +4,7 @@
 *    Copyright @copyright 2016 Mondido
 *
 *    @category  Payment
-*    @version   1.5.0
+*    @version   1.5.1
 *    @author    Mondido
 *    @copyright 2016 Mondido
 *    @link      https://www.mondido.com
@@ -14,7 +14,6 @@
 *   Payment module mondidopay
 *}
 <form action="https://pay.mondido.com/v1/form" method="post" id="mondido_form" class="display:none;">
-    <input type="hidden" name="payment_ref" value="{$payment_ref|escape:'htmlall':'UTF-8'}">
     <input type="hidden" name="customer_ref" value="{$customer->id|escape:'htmlall':'UTF-8'}">
     <input type="hidden" name="amount" value="{$total|escape:'htmlall':'UTF-8'}">
     <input type="hidden" name="currency" value="{$currency->iso_code|escape:'htmlall':'UTF-8'}">
@@ -24,6 +23,7 @@
     <input type="hidden" name="error_url" value="{$this_path_ssl|escape:'htmlall':'UTF-8'}payment.php">
     <input type="hidden" name="test" value="{$test|escape:'htmlall':'UTF-8'}">
     <input type="hidden" name="items" value='{$items|escape:'htmlall':'UTF-8'}'>
+    <input type="hidden" name="payment_ref" value="{$payment_ref|escape:'htmlall':'UTF-8'}">
 
     <input type="hidden" name="metadata[products]" value='{$metadata|escape:'htmlall':'UTF-8'}' />
     <input type="hidden" name="metadata[customer][firstname]" value="{$address->firstname|escape:'htmlall':'UTF-8'}" />
@@ -51,7 +51,7 @@
 
 <p class="payment_module" style="width:570px;">
     <a id="mondido" href="#" title="{l s='Pay with your Credit Card' mod='mondidopay'}">
-        <img src="https://cdn-02.mondido.com/www/img/mondido-2015.png" alt="{l s='Pay with your Credit Card' mod='mondidopay'}" width="106" height="32"/>
+        <img src="https://cdn-02.mondido.com/www/img/mondido-2015.png" alt="{l s='Pay with your Credit Card' mod='mondidopay'}" width="106">
         {l s='Pay with a credit card' mod='mondidopay'}
     </a>
 </p>

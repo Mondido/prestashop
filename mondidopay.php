@@ -140,7 +140,7 @@ class mondidopay extends PaymentModule
         }
         else
         {
-            $payment_ref =  'apa'.$cart->id;
+            $payment_ref =  'a'.$cart->id;
         }
         
         $form_data = array(
@@ -247,7 +247,7 @@ class mondidopay extends PaymentModule
         }
         else
         {
-            $payment_ref =  'apa'.$cart->id;
+            $payment_ref =  'a'.$cart->id;
         }        
         $this->context->smarty->assign(array(
             'payment_ref' => $payment_ref,
