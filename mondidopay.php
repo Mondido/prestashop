@@ -139,6 +139,8 @@ class mondidopay extends PaymentModule
         {
             $payment_ref =  'a'.$cart->id;
         }
+        $subtotal = number_format($cart_details['total_price_without_tax'], 2, '.', '');
+        $vat_amount = $total - $subtotal;
         
         $form_data = array(
             'payment_ref' => $payment_ref,
@@ -150,13 +152,14 @@ class mondidopay extends PaymentModule
             'password'	=> $this->password,
             'test'	=> $this->test,
             'total' => $total,
-            'subtotal' => number_format($cart_details['total_price_without_tax'], 2, '.', ''),
+            'subtotal' => $subtotal,
             'currency' => $currency,
             'custom' => Tools::jsonEncode(array('id_cart' => $cart->id, 'hash' => $cart->nbProducts())),
             'customer' => $this->context->customer,
             'metadata'=> $data,
             'cart' => $cart,
             'address'	=> $billing_address,
+            'vat_amount' => $vat_amount,
             'hash'	=> md5(
                 $this->merchantID .
                 $payment_ref .

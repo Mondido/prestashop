@@ -10,13 +10,15 @@
 *    @copyright 2016 Mondido
 *    @link      https://www.mondido.com
 *    @license   MIT
+*    @package   none
 *
 *   Description:
 *   Payment module mondidopay
 */
+define('_PS_MODE_DEV_', true);
 require dirname(__FILE__).'/../../config/config.inc.php';
-include(dirname(__FILE__).'/../../header.php');
-include_once(dirname(__FILE__).'/mondidopay.php');
+include dirname(__FILE__).'/../../header.php' ;
+include_once dirname(__FILE__).'/mondidopay.php' ;
 
 $context = Context::getContext();
 $cart = $context->cart;
@@ -42,25 +44,40 @@ if (isset($transaction_id)) {
 
     $file = Tools::file_get_contents($remoteurl, false, $context);
     $data = (array) Tools::jsonDecode($file, true);
-    if(isset($data))
-    {
+    if(isset($data)) {
         $order = new Order($mondidopay->currentOrder);
         //TODO: update delivery address if it is the case 
 
-        if($data['payment_method'] == 'invoice')
-        {
+        if($data['transaction_type'] == 'invoice') {
             $pd = $data['payment_details'];
             
-             $shipping_address = new Address((int) $order->id_address_delivery);
-             $shipping_address->phone = $pd['phone'];
-             $shipping_address->lastname = $pd['last_name'];
-             $shipping_address->firstname = $pd['first_name'];
-             $shipping_address->address1 = $pd['address_1'];
-             $shipping_address->address2 = $pd['address_2'];
-             $shipping_address->city = $pd['city'];
-             $shipping_address->postcode = $pd['zip'];
-             $shipping_address->country = $pd['country_code'];
-             $shipping_address->update();
+            $shipping_address = new Address((int) $order->id_address_invoice);
+            if(!empty($pd['phone'])) {
+                $shipping_address->phone = $pd['phone'];
+            }
+            if(!empty($pd['last_name'])) {
+                $shipping_address->lastname = $pd['last_name'];
+            }
+            if(!empty($pd['first_name'])) {
+                $shipping_address->firstname = $pd['first_name'];
+            }
+            if(!empty($pd['address_1'])) {
+                $shipping_address->address1 = $pd['address_1'];
+            }
+            if(!empty($pd['address_2'])) {
+                $shipping_address->address2 = $pd['address_2'];
+            }
+            if(!empty($pd['city'])) {
+                $shipping_address->city = $pd['city'];
+            }
+            if(!empty($pd['zip'])) {
+                $shipping_address->postcode = $pd['zip'];
+            }
+            if(!empty($pd['country_code'])) {
+                $shipping_address->country = $pd['country_code'];
+            }
+            
+            $shipping_address->update();
         }
 
         $payments = $order->getOrderPaymentCollection();
