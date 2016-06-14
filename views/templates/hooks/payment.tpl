@@ -4,7 +4,7 @@
 *    Copyright @copyright 2016 Mondido
 *
 *    @category  Payment
-*    @version   1.5.1
+*    @version   1.5.2
 *    @author    Mondido
 *    @copyright 2016 Mondido
 *    @link      https://www.mondido.com
@@ -24,6 +24,7 @@
     <input type="hidden" name="test" value="{$test|escape:'htmlall':'UTF-8'}">
     <input type="hidden" name="items" value='{$items|escape:'htmlall':'UTF-8'}'>
     <input type="hidden" name="payment_ref" value="{$payment_ref|escape:'htmlall':'UTF-8'}">
+    <input type="hidden" name="vat_amount" value="{$vat_amount|escape:'htmlall':'UTF-8'}">
 
     <input type="hidden" name="metadata[products]" value='{$metadata|escape:'htmlall':'UTF-8'}' />
     <input type="hidden" name="metadata[customer][firstname]" value="{$address->firstname|escape:'htmlall':'UTF-8'}" />

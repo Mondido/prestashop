@@ -1,5 +1,5 @@
 <img src="https://cdn-02.mondido.com/www/img/mondido-2015.png" alt="{l s='Pay with your Credit Card using Mondido Pay' mod='mondidopay'}" width="231"/>
-<h2>{l s='Mondido Payment Checkout 1.5.1' mod='mondidopay'}</h2>
+<h2>{l s='Mondido Payment Checkout 1.5.2' mod='mondidopay'}</h2>
 <fieldset>
     <legend>Help</legend>
    <p>
