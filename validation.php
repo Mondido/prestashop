@@ -5,7 +5,7 @@
 *    Copyright @copyright 2016 Mondido
 *
 *    @category  Payment
-*    @version   1.5.0
+*    @version   1.5.2
 *    @author    Mondido
 *    @copyright 2016 Mondido
 *    @link      https://www.mondido.com
@@ -14,9 +14,6 @@
 *   Description:
 *   Payment module mondidopay
 */
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 require dirname(__FILE__).'/../../config/config.inc.php';
 include(dirname(__FILE__).'/../../header.php');
 include_once(dirname(__FILE__).'/mondidopay.php');
@@ -35,7 +32,7 @@ $mondidopay->validateOrder($cart->id, _PS_OS_PAYMENT_, $total, $mondidopay->disp
 $theval = Tools::getValue('transaction_id');
 if (isset($transaction_id)) {
     $merchantID = Configuration::get('MONDIDO_MERCHANTID');
-    $password =Configuration::get('MONDIDO_PASSWORD');
+    $password = Configuration::get('MONDIDO_PASSWORD');
     $remoteurl = 'https://api.mondido.com/v1/transactions/'. $transaction_id;
     $opts = array('http' => array('method' => "GET",
         'header' => "Authorization: Basic " .base64_encode("$merchantID:$password")
@@ -45,8 +42,27 @@ if (isset($transaction_id)) {
 
     $file = Tools::file_get_contents($remoteurl, false, $context);
     $data = (array) Tools::jsonDecode($file, true);
-    if(isset($data)){
+    if(isset($data))
+    {
         $order = new Order($mondidopay->currentOrder);
+        //TODO: update delivery address if it is the case 
+
+        if($data['payment_method'] == 'invoice')
+        {
+            $pd = $data['payment_details'];
+            
+             $shipping_address = new Address((int) $order->id_address_delivery);
+             $shipping_address->phone = $pd['phone'];
+             $shipping_address->lastname = $pd['last_name'];
+             $shipping_address->firstname = $pd['first_name'];
+             $shipping_address->address1 = $pd['address_1'];
+             $shipping_address->address2 = $pd['address_2'];
+             $shipping_address->city = $pd['city'];
+             $shipping_address->postcode = $pd['zip'];
+             $shipping_address->country = $pd['country_code'];
+             $shipping_address->update();
+        }
+
         $payments = $order->getOrderPaymentCollection();
         $payments[0]->transaction_id = $transaction_id;
         $payments[0]->card_number = $data['card_number'];
@@ -54,6 +70,10 @@ if (isset($transaction_id)) {
         $payments[0]->card_brand = $data['card_type'];
         $payments[0]->payment_method = $data['transaction_type'];
         $payments[0]->update();
+    }
+    else
+    {
+        //redirect error
     }
 }
 

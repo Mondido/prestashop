@@ -2,12 +2,12 @@
 *  $Id$
 *  mondidopayment Module
 * 
-* Copyright @copyright 2014 3o-BPO
+* Copyright @copyright 2016 Mondido 
 * 
 * @category Payment
-* @version 1.5.1
-* @copyright 01.06.2014, 3o-BPO
-* @author Jeeky Vincent Mojica, <www.3obpo.com> 
+* @version 1.5.2
+* @copyright Mondido
+* @author Mondido
 * @link
 * @license
 * 
@@ -28,7 +28,7 @@
 *}
 
 <img src="{$this_path}/img/mondido-logo-plugin.png" alt="{l s='Pay with your Credit Card using Mondido Pay' mod='mondidopay'}" width="231" height="58"/>
-<h2>{l s='Mondido Payment Checkout 1.0' mod='mondidopay'}</h2>
+<h2>{l s='Mondido Payment Checkout 1.5.2' mod='mondidopay'}</h2>
 <fieldset>
 	<legend>Help</legend>
 	<p>

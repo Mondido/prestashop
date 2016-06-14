@@ -39,7 +39,7 @@ class mondidopay extends PaymentModule
         $this->displayName = $this->l('MONDIDO PAYMENTS');
         $this->description = $this->l('Online payment by Mondido');
         $this->author = 'Mondido';
-        $this->version = '1.5.1';
+        $this->version = '1.5.2';
         $this->tab = 'payments_gateways';
         $this->confirmUninstall = $this->l('Are you sure you want to uninstall?');
         $this->setModuleSettings();
@@ -53,8 +53,6 @@ class mondidopay extends PaymentModule
         }
     }
 
-
-
     public function install() 
     {
         return parent::install() &&
@@ -66,9 +64,8 @@ class mondidopay extends PaymentModule
             $this->registerHook('displayPayment');
     }
 
-
-
-    public function uninstall() {
+    public function uninstall() 
+    {
         Configuration::deleteByName('MONDIDO_MERCHANTID');
         Configuration::deleteByName('MONDIDO_SECRET');
         Configuration::deleteByName('MONDIDO_PASSWORD');
@@ -80,7 +77,8 @@ class mondidopay extends PaymentModule
         return parent::uninstall();
     }
 
-    public function hookPayment($params) {
+    public function hookPayment($params) 
+    {
         $cart = $this->context->cart;
         $cart_details = $cart->getSummaryDetails(null, true);
         $billing_address = new Address($this->context->cart->id_address_invoice);
@@ -92,7 +90,7 @@ class mondidopay extends PaymentModule
         $platform_version = _PS_VERSION_;
         $platform_type = 'prestashop';
         $lang_version = phpversion();
-        $plugin_version = '1.5.1';
+        $plugin_version = '1.5.2';
         
         $analytics = [];
         $google = [];
@@ -123,7 +121,6 @@ class mondidopay extends PaymentModule
         );
         array_push($items, $prod);
         
-//        $user_address = new Address(intval($params['cart']->id_address_invoice));
 
         if(isset($_COOKIE['m_ad_code'])) {
             $google["ad_code"] = $_COOKIE['m_ad_code'];
@@ -177,8 +174,8 @@ class mondidopay extends PaymentModule
         return $this->display(__FILE__, 'views/templates/hooks/payment.tpl');
     }
 
-
-    public function httpAuth() {
+    public function httpAuth() 
+    {
         $merchantID = $this->merchantID;
         $password = $this->password;
         $remoteurl = 'https://api.mondido.com/' ;
@@ -195,7 +192,8 @@ class mondidopay extends PaymentModule
         return $data;
     }
 
-    public function getContent() {
+    public function getContent() 
+    {
         if (Tools::getValue('mondido_updateSettings')) 
         {
             Configuration::updateValue('MONDIDO_MERCHANTID', Tools::getValue('merchantID'));
@@ -221,7 +219,8 @@ class mondidopay extends PaymentModule
 
     }
 
-    public function setModuleSettings() {
+    public function setModuleSettings() 
+    {
         $this->merchantID = Configuration::get('MONDIDO_MERCHANTID');
         $this->secretCode = Configuration::get('MONDIDO_SECRET');
         $this->password	  = Configuration::get('MONDIDO_PASSWORD');
@@ -229,8 +228,8 @@ class mondidopay extends PaymentModule
         $this->dev        = Configuration::get('MONDIDO_DEV');
     }
 
-
-    public function execPayment($cart) {
+    public function execPayment($cart) 
+    {
         if (!$this->active) {
             return;
         }

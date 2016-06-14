@@ -9,6 +9,7 @@ Get your mondido account at: https://www.mondido.com/en
 
 
 Changelog:   
+1.5.2 clean up some code
 1.5.1 Fixed currency issues and added dev mode for development order ids
 1.5 Added items to payment body
 1.4 Fixed bugs
