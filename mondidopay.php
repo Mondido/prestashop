@@ -23,13 +23,10 @@
 *  @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
-
 if (!defined('_PS_VERSION_')) {
     exit;
 }
-
 include_once(_PS_SWIFT_DIR_.'Swift/Message/Encoder.php');
-
 class mondidopay extends PaymentModule 
 {
     protected $_errors = array();
@@ -39,7 +36,7 @@ class mondidopay extends PaymentModule
         $this->displayName = $this->l('MONDIDO PAYMENTS');
         $this->description = $this->l('Online payment by Mondido');
         $this->author = 'Mondido';
-        $this->version = '1.5.1';
+        $this->version = '1.5.3';
         $this->tab = 'payments_gateways';
         $this->confirmUninstall = $this->l('Are you sure you want to uninstall?');
         $this->setModuleSettings();
@@ -52,9 +49,6 @@ class mondidopay extends PaymentModule
             $this->warning = $this->l('No name provided');
         }
     }
-
-
-
     public function install() 
     {
         return parent::install() &&
@@ -65,10 +59,8 @@ class mondidopay extends PaymentModule
             $this->registerHook('actionPaymentConfirmation') &&
             $this->registerHook('displayPayment');
     }
-
-
-
-    public function uninstall() {
+    public function uninstall() 
+    {
         Configuration::deleteByName('MONDIDO_MERCHANTID');
         Configuration::deleteByName('MONDIDO_SECRET');
         Configuration::deleteByName('MONDIDO_PASSWORD');
@@ -76,11 +68,10 @@ class mondidopay extends PaymentModule
         Configuration::deleteByName('MONDIDO_DEV');
         Configuration::deleteByName('MONDIDO_SUCCESS_URL');
         Configuration::deleteByName('MONDIDO_ERROR_URL');
-
         return parent::uninstall();
     }
-
-    public function hookPayment($params) {
+    public function hookPayment($params) 
+    {
         $cart = $this->context->cart;
         $cart_details = $cart->getSummaryDetails(null, true);
         $billing_address = new Address($this->context->cart->id_address_invoice);
@@ -92,7 +83,7 @@ class mondidopay extends PaymentModule
         $platform_version = _PS_VERSION_;
         $platform_type = 'prestashop';
         $lang_version = phpversion();
-        $plugin_version = '1.5.1';
+        $plugin_version = '1.5.2';
         
         $analytics = [];
         $google = [];
@@ -113,8 +104,7 @@ class mondidopay extends PaymentModule
         if(!$ship_name){
             $ship_name = 'Shipping';
         }
-       
-         $prod = array(
+        $prod = array(
             'artno' => 'Shipping',
             'description' => $ship_name,
             'amount' => $cart_details['total_shipping'],
@@ -122,22 +112,17 @@ class mondidopay extends PaymentModule
             'vat' => number_format($cart_details['total_shipping']-$cart_details['total_shipping_tax_exc'], 2, '.', ''),
             'discount' => '0.00'
         );
-
         array_push($items, $prod);
         
-
         if(isset($_COOKIE['m_ad_code'])) {
             $google["ad_code"] = $_COOKIE['m_ad_code'];
         }
-
         if(isset($_COOKIE['m_ref_str'])) {
             $analytics["referrer"] = $_COOKIE['m_ref_str'];
         }
         $currency =  new Currency((int)$cart->id_currency);
         $analytics['google'] = $google;
-
         $data = Tools::jsonEncode($prod_data);
-
         if($this->dev == 'true')
         {
             $payment_ref =  'dev'.$cart->id;
@@ -146,8 +131,9 @@ class mondidopay extends PaymentModule
         {
             $payment_ref =  'a'.$cart->id;
         }
-       
-
+        $subtotal = number_format($cart_details['total_price_without_tax'], 2, '.', '');
+        $vat_amount = $total - $subtotal;
+        
         $webhook = array( 
             'url' => (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://').htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__.'modules/'.$this->name.'/validation.php',
             'trigger' => 'payment', 
@@ -156,10 +142,8 @@ class mondidopay extends PaymentModule
             'type' => 'CustomHttp' 
             );
 
-
         $form_data = array(
             'payment_ref' => $payment_ref,
-            'customer_ref'=> $this->context->customer->id,
             'items' => Tools::jsonEncode($items),
             'analytics' => Tools::jsonEncode($analytics),
             'error_name' =>  $error_name,
@@ -168,14 +152,14 @@ class mondidopay extends PaymentModule
             'password'	=> $this->password,
             'test'	=> $this->test,
             'total' => $total,
-            'subtotal' => number_format($cart_details['total_price_without_tax'], 2, '.', ''),
+            'subtotal' => $subtotal,
             'currency' => $currency,
             'custom' => Tools::jsonEncode(array('id_cart' => $cart->id, 'hash' => $cart->nbProducts())),
             'customer' => $this->context->customer,
-            'cart' => $cart,
             'metadata'=> $data,
-
+            'cart' => $cart,
             'address'	=> $billing_address,
+            'vat_amount' => $vat_amount,
             'hash'	=> md5(
                 $this->merchantID .
                 $payment_ref .
@@ -187,32 +171,27 @@ class mondidopay extends PaymentModule
             ),
             'this_path' => $this->_path,
             'this_path_ssl' => (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://').htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__.'modules/'.$this->name.'/',
-            //
             'webhook'=> Tools::jsonEncode($webhook)
         );
         $this->context->smarty->assign($form_data);
         return $this->display(__FILE__, 'views/templates/hooks/payment.tpl');
     }
-
-
-    public function httpAuth() {
+    public function httpAuth() 
+    {
         $merchantID = $this->merchantID;
         $password = $this->password;
         $remoteurl = 'https://api.mondido.com/' ;
         $Swift_Message_Encoder = new Swift_Message_Encoder();
-
         $opts = array('http' => array('method' => "GET",
             'header' => "Authorization: Basic " . $Swift_Message_Encoder->base64Encode("$merchantID:$password")
         ));
-
         $context = stream_context_create($opts);
-
         $file = Tools::file_get_contents($remoteurl, false, $context);
         $data = (array) Tools::jsonDecode($file, true);
         return $data;
     }
-
-    public function getContent() {
+    public function getContent() 
+    {
         if (Tools::getValue('mondido_updateSettings')) 
         {
             Configuration::updateValue('MONDIDO_MERCHANTID', Tools::getValue('merchantID'));
@@ -222,11 +201,8 @@ class mondidopay extends PaymentModule
             Configuration::updateValue('MONDIDO_DEV', Tools::getValue('dev'));
             Configuration::updateValue('MONDIDO_SUCCESS_URL', Tools::getValue('success_url'));
             Configuration::updateValue('MONDIDO_ERROR_URL', Tools::getValue('error_url'));
-
             $this->setModuleSettings();
         }
-
-
         $this->context->smarty->assign(array(
             'merchantID' => $this->merchantID,
             'secretCode' => $this->secretCode,
@@ -236,20 +212,17 @@ class mondidopay extends PaymentModule
             'this_path' => $this->_path,
             'this_path_ssl' => Configuration::get('PS_FO_PROTOCOL').$_SERVER['HTTP_HOST'].__PS_BASE_URI__."modules/{$this->name}/"));
         return $this->display(__FILE__, 'views/templates/admin/config.tpl');
-
     }
-
-    public function setModuleSettings() {
+    public function setModuleSettings() 
+    {
         $this->merchantID = Configuration::get('MONDIDO_MERCHANTID');
         $this->secretCode = Configuration::get('MONDIDO_SECRET');
         $this->password	  = Configuration::get('MONDIDO_PASSWORD');
         $this->test		  = Configuration::get('MONDIDO_TEST');
         $this->dev        = Configuration::get('MONDIDO_DEV');
     }
-
-
-    public function execPayment($cart) {
-
+    public function execPayment($cart) 
+    {
         if (!$this->active) {
             return;
         }
@@ -268,7 +241,6 @@ class mondidopay extends PaymentModule
         {
             $payment_ref =  'a'.$cart->id;
         }        
-
         $this->context->smarty->assign(array(
             'payment_ref' => $payment_ref,
             'error_name' =>  $error_name,
@@ -294,8 +266,7 @@ class mondidopay extends PaymentModule
                 $this->secretCode
             ),
             'this_path' => $this->_path,
-            'this_path_ssl' => (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://').htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__.'modules/'.$this->name.'/',
-
+            'this_path_ssl' => (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://').htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__.'modules/'.$this->name.'/'
         ));
         return $this->display(__FILE__, 'views/templates/hooks/payment_execution.tpl');
     }
