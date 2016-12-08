@@ -177,7 +177,6 @@ class mondidopay extends PaymentModule
             'currency' => $currency,
             'custom' => Tools::jsonEncode(array('id_cart' => $cart->id, 'hash' => $cart->nbProducts())),
             'customer' => $this->context->customer,
-            //'metadata'=> $data,
             'metadata'=> Tools::jsonEncode($metadata),
             'cart' => $cart,
             'address'	=> $billing_address,
