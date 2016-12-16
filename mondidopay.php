@@ -83,7 +83,7 @@ class mondidopay extends PaymentModule
         $platform_version = _PS_VERSION_;
         $platform_type = 'prestashop';
         $lang_version = phpversion();
-        $plugin_version = '1.5.2';
+        $plugin_version = '1.5.3';
         
         $analytics = [];
         $google = [];
@@ -134,6 +134,27 @@ class mondidopay extends PaymentModule
         $subtotal = number_format($cart_details['total_price_without_tax'], 2, '.', '');
         $vat_amount = $total - $subtotal;
         
+        $customer = array(
+            'firstname' => $billing_address->firstname,
+            'lastname' => $billing_address->lastname,
+            'address1' => $billing_address->address1,
+            'address2' => $billing_address->address2,
+            'postcode' => $billing_address->postcode,
+            'phone' => $billing_address->phone,
+            'phone_mobile' => $billing_address->phone_mobile,
+            'city' => $billing_address->city,
+            'country' => $billing_address->country,
+            'email' => $this->context->customer->email
+        );
+
+        $metadata = array(
+            'products'=>$prod_data,
+            'customer'=>$customer,
+            'analytics'=>$analytics
+        );
+
+
+
         $webhook = array( 
             'url' => (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://').htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__.'modules/'.$this->name.'/validation.php',
             'trigger' => 'payment', 
@@ -156,7 +177,7 @@ class mondidopay extends PaymentModule
             'currency' => $currency,
             'custom' => Tools::jsonEncode(array('id_cart' => $cart->id, 'hash' => $cart->nbProducts())),
             'customer' => $this->context->customer,
-            'metadata'=> $data,
+            'metadata'=> Tools::jsonEncode($metadata),
             'cart' => $cart,
             'address'	=> $billing_address,
             'vat_amount' => $vat_amount,
