@@ -5,7 +5,7 @@
 *    Copyright @copyright 2016 Mondido
 *
 *    @category  Payment
-*    @version   1.5.2
+*    @version   1.5.3
 *    @author    Mondido
 *    @copyright 2016 Mondido
 *    @link      https://www.mondido.com
@@ -20,34 +20,65 @@ require dirname(__FILE__).'/../../config/config.inc.php';
 include dirname(__FILE__).'/../../header.php' ;
 include_once dirname(__FILE__).'/mondidopay.php' ;
 
-$context = Context::getContext();
-$cart = $context->cart;
-$currency = new Currency((int)Tools::getIsset((Tools::getValue('currency_payement')) ? Tools::getValue('currency_payement') : $context->cookie->id_currency));
-$total = (float) number_format($cart->getOrderTotal(true, 3), 2, '.', '');
-$transaction_id = Tools::getValue('transaction_id');
-$hash = Tools::getValue('hash');
-$payment_ref=Tools::getValue('payment_ref');
+$isWebhookPost = false;
+$transaction_id = Tools::getValue('transaction_id') ? Tools::getValue('transaction_id') :Tools::getValue('id');
 
-$mondidopay = new mondidopay();
-$mondidopay->validateOrder($cart->id, _PS_OS_PAYMENT_, $total, $mondidopay->displayName, null, null, $currency->id);
-
-$theval = Tools::getValue('transaction_id');
 if (isset($transaction_id)) {
     $merchantID = Configuration::get('MONDIDO_MERCHANTID');
     $password = Configuration::get('MONDIDO_PASSWORD');
+    $secret = Configuration::get('MONDIDO_SECRET');
+    
+         //incoming webhook? Needs a better way to identify a webhook.
+    if(Tools::getValue('id'))
+    {
+        $isWebhookPost = true; 
+        ob_clean();
+        echo "Order has already been settled by client redirect. ";
+
+        $cart_id = str_replace("dev","",str_replace("a","",Tools::getValue('payment_ref')));
+       
+        $cart = new cart($cart_id);
+        $currency =  new Currency((int)$cart->id_currency);
+        $currencyiso =  strtolower($currency->iso_code);
+
+        $thisCustomer = (array) Tools::jsonDecode(Tools::getValue('customer'), true);
+        $hash = Tools::getValue('response_hash');
+        $total = number_format($cart->getOrderTotal(true, 3), 2, '.', '');
+       
+        $thisHash = ((string)$merchantID.(string)Tools::getValue('payment_ref').(string)$thisCustomer["ref"].$total.$currencyiso.(string)Tools::getValue('status').(string)$secret);
+        $thisHash = MD5($thisHash);
+        if(!($thisHash == $hash) )
+        {
+            ob_clean();
+            echo "Wrong hash";
+            die();
+        }
+    }
+    else
+    {   
+        $context = Context::getContext();
+        $cart = $context->cart;
+        $currency = new Currency((int)Tools::getIsset((Tools::getValue('currency_payement')) ? Tools::getValue('currency_payement') : $context->cookie->id_currency));
+        $total = (float) number_format($cart->getOrderTotal(true, 3), 2, '.', '');
+
+        $hash = Tools::getValue('hash');
+        $payment_ref=Tools::getValue('payment_ref');
+    }
+    $mondidopay = new mondidopay();
+    $mondidopay->validateOrder($cart->id, _PS_OS_PAYMENT_, $total, $mondidopay->displayName, null, null, $currency->id);
+    
     $remoteurl = 'https://api.mondido.com/v1/transactions/'. $transaction_id;
     $opts = array('http' => array('method' => "GET",
         'header' => "Authorization: Basic " .base64_encode("$merchantID:$password")
     ));
-
-    $context = stream_context_create($opts);
-
-    $file = Tools::file_get_contents($remoteurl, false, $context);
+    $streamcontext = stream_context_create($opts);
+    $file = Tools::file_get_contents($remoteurl, false, $streamcontext);
     $data = (array) Tools::jsonDecode($file, true);
+    
+
     if(isset($data)) {
         $order = new Order($mondidopay->currentOrder);
         //TODO: update delivery address if it is the case 
-
         if($data['transaction_type'] == 'invoice') {
             $pd = $data['payment_details'];
             
@@ -79,7 +110,6 @@ if (isset($transaction_id)) {
             
             $shipping_address->update();
         }
-
         $payments = $order->getOrderPaymentCollection();
         $payments[0]->transaction_id = $transaction_id;
         $payments[0]->card_number = $data['card_number'];
@@ -93,5 +123,10 @@ if (isset($transaction_id)) {
         //redirect error
     }
 }
-
+if($isWebhookPost)
+{
+    ob_clean();
+    echo "OK";
+    die();
+}
 Tools::redirectLink(_PS_BASE_URL_ . __PS_BASE_URI__.'index.php?controller=order-confirmation&id_cart='.(int)$cart->id.'&payment_ref='.$payment_ref.'&id_module='.$mondidopay->id.'&id_order='.$mondidopay->currentOrder.'&key='.$order->secure_key.'&transaction_id='.$transaction_id.'&hash='.$hash);
