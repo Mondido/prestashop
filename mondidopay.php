@@ -26,7 +26,7 @@
 if (!defined('_PS_VERSION_')) {
     exit;
 }
-include_once(_PS_SWIFT_DIR_.'Swift/Message/Encoder.php');
+
 class mondidopay extends PaymentModule 
 {
     protected $_errors = array();
@@ -202,9 +202,8 @@ class mondidopay extends PaymentModule
         $merchantID = $this->merchantID;
         $password = $this->password;
         $remoteurl = 'https://api.mondido.com/' ;
-        $Swift_Message_Encoder = new Swift_Message_Encoder();
         $opts = array('http' => array('method' => "GET",
-            'header' => "Authorization: Basic " . $Swift_Message_Encoder->base64Encode("$merchantID:$password")
+            'header' => "Authorization: Basic " . base64_encode("$merchantID:$password")
         ));
         $context = stream_context_create($opts);
         $file = Tools::file_get_contents($remoteurl, false, $context);
