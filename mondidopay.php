@@ -95,7 +95,7 @@ class mondidopay extends PaymentModule
               'amount' => $i['total_wt'],
               'qty' => $i['quantity'],
               'vat' => $i['rate'],
-              'discount' => $i['0.00']
+              'discount' => '0.00'
             );
             array_push($items, $prod);
         }    
@@ -113,6 +113,21 @@ class mondidopay extends PaymentModule
             'discount' => '0.00'
         );
         array_push($items, $prod);
+
+        // Discount
+        $total_discounts_tax_incl = (float)abs($cart->getOrderTotal(true, Cart::ONLY_DISCOUNTS, $cart->getProducts(), (int)$cart->id_carrier));
+        if ($total_discounts_tax_incl > 0) {
+            $total_discounts_tax_excl = (float)abs($cart->getOrderTotal(false, Cart::ONLY_DISCOUNTS, $cart->getProducts(), (int)$cart->id_carrier));
+            $prod = array(
+                'artno' => 'Discount',
+                'description' => $this->l('Discount'),
+                'amount' => -1 * $total_discounts_tax_incl,
+                'qty' => '1',
+                'vat' => number_format(-1 * ($total_discounts_tax_incl - $total_discounts_tax_excl), 2, '.', ''),
+                'discount' => '0.00'
+            );
+            array_push($items, $prod);
+        }
         
         if(isset($_COOKIE['m_ad_code'])) {
             $google["ad_code"] = $_COOKIE['m_ad_code'];
