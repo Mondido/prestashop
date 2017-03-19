@@ -323,6 +323,50 @@ class mondidopay extends PaymentModule
         $this->context->smarty->assign($form_data);
         return $this->display(__FILE__, 'views/templates/hooks/payment.tpl');
     }
+
+    /**
+     * Hook: Payment Return
+     * @param $params
+     * @return bool
+     */
+    public function hookPaymentReturn($params)
+    {
+        if (!$this->active) {
+            return;
+        }
+        $message = '';
+        $order = $params['objOrder'];
+        switch ($order->current_state) {
+            case Configuration::get('PS_OS_MONDIDOPAY_APPROVED'):
+                $status = 'ok';
+                break;
+            case Configuration::get('PS_OS_MONDIDOPAY_PENDING');
+            case Configuration::get('PS_OS_MONDIDOPAY_AUTHORIZED'):
+                $status = 'pending';
+                break;
+            case Configuration::get('PS_OS_MONDIDOPAY_DECLINED'):
+                $status = 'declined';
+                $message = $this->l('Payment declined');
+                break;
+            case Configuration::get('PS_OS_ERROR'):
+                $status = 'error';
+                $message = $this->l('Payment error');
+                break;
+            default:
+                $status = 'error';
+                $message = $this->l('Order error');
+        }
+        $this->smarty->assign(array(
+            'message' => $message,
+            'status' => $status,
+            'id_order' => $order->id
+        ));
+        if (property_exists($order, 'reference') && !empty($order->reference)) {
+            $this->smarty->assign('reference', $order->reference);
+        }
+        return $this->display(__FILE__, 'confirmation.tpl');
+    }
+
     public function httpAuth() 
     {
         $merchantID = $this->merchantID;
