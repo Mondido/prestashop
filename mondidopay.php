@@ -48,9 +48,15 @@ class mondidopay extends PaymentModule
         if (!Configuration::get('mondidopay')) {
             $this->warning = $this->l('No name provided');
         }
+
+        // @todo Remove in future version
+        $this->addOrderStates();
     }
     public function install() 
     {
+        // Install Order statuses
+        $this->addOrderStates();
+
         return parent::install() &&
             $this->registerHook('header') &&
             $this->registerHook('backOfficeHeader') &&
@@ -70,6 +76,113 @@ class mondidopay extends PaymentModule
         Configuration::deleteByName('MONDIDO_ERROR_URL');
         return parent::uninstall();
     }
+
+    /**
+     * Add PayEx Order Statuses
+     */
+    private function addOrderStates()
+    {
+        // Pending
+        if (!(Configuration::get('PS_OS_MONDIDOPAY_PENDING') > 0)) {
+            $OrderState = new OrderState(null, Configuration::get('PS_LANG_DEFAULT'));
+            $OrderState->name = 'Mondido: Pending';
+            $OrderState->invoice = false;
+            $OrderState->send_email = true;
+            $OrderState->module_name = $this->name;
+            $OrderState->color = '#4169E1';
+            $OrderState->unremovable = true;
+            $OrderState->hidden = false;
+            $OrderState->logable = true;
+            $OrderState->delivery = false;
+            $OrderState->shipped = false;
+            $OrderState->paid = false;
+            $OrderState->deleted = false;
+            $OrderState->template = 'preparation';
+            $OrderState->add();
+
+            Configuration::updateValue('PS_OS_MONDIDOPAY_PENDING', $OrderState->id);
+
+            if (file_exists(dirname(dirname(dirname(__FILE__))) . '/img/os/9.gif')) {
+                @copy(dirname(dirname(dirname(__FILE__))) . '/img/os/9.gif', dirname(dirname(dirname(__FILE__))) . '/img/os/' . $OrderState->id . '.gif');
+            }
+        }
+
+        // Authorized
+        if (!(Configuration::get('PS_OS_MONDIDOPAY_AUTHORIZED') > 0)) {
+            $OrderState = new OrderState(null, Configuration::get('PS_LANG_DEFAULT'));
+            $OrderState->name = 'Mondido: Authorized';
+            $OrderState->invoice = false;
+            $OrderState->send_email = true;
+            $OrderState->module_name = $this->name;
+            $OrderState->color = '#FF8C00';
+            $OrderState->unremovable = true;
+            $OrderState->hidden = false;
+            $OrderState->logable = true;
+            $OrderState->delivery = false;
+            $OrderState->shipped = false;
+            $OrderState->paid = false;
+            $OrderState->deleted = false;
+            $OrderState->template = 'order_changed';
+            $OrderState->add();
+
+            Configuration::updateValue('PS_OS_MONDIDOPAY_AUTHORIZED', $OrderState->id);
+
+            if (file_exists(dirname(dirname(dirname(__FILE__))) . '/img/os/10.gif')) {
+                @copy(dirname(dirname(dirname(__FILE__))) . '/img/os/10.gif', dirname(dirname(dirname(__FILE__))) . '/img/os/' . $OrderState->id . '.gif');
+            }
+        }
+
+        // Approved
+        if (!(Configuration::get('PS_OS_MONDIDOPAY_APPROVED') > 0)) {
+            $OrderState = new OrderState(null, Configuration::get('PS_LANG_DEFAULT'));
+            $OrderState->name = 'Mondido: Approved';
+            $OrderState->invoice = true;
+            $OrderState->send_email = true;
+            $OrderState->module_name = $this->name;
+            $OrderState->color = '#32CD32';
+            $OrderState->unremovable = true;
+            $OrderState->hidden = false;
+            $OrderState->logable = true;
+            $OrderState->delivery = false;
+            $OrderState->shipped = false;
+            $OrderState->paid = true;
+            $OrderState->deleted = false;
+            $OrderState->template = 'payment';
+            $OrderState->add();
+
+            Configuration::updateValue('PS_OS_MONDIDOPAY_APPROVED', $OrderState->id);
+
+            if (file_exists(dirname(dirname(dirname(__FILE__))) . '/img/os/10.gif')) {
+                @copy(dirname(dirname(dirname(__FILE__))) . '/img/os/10.gif', dirname(dirname(dirname(__FILE__))) . '/img/os/' . $OrderState->id . '.gif');
+            }
+        }
+
+        // Declined
+        if (!(Configuration::get('PS_OS_MONDIDOPAY_DECLINED') > 0)) {
+            $OrderState = new OrderState(null, Configuration::get('PS_LANG_DEFAULT'));
+            $OrderState->name = 'Mondido: Declined';
+            $OrderState->invoice = false;
+            $OrderState->send_email = true;
+            $OrderState->module_name = $this->name;
+            $OrderState->color = '#DC143C';
+            $OrderState->unremovable = true;
+            $OrderState->hidden = false;
+            $OrderState->logable = true;
+            $OrderState->delivery = false;
+            $OrderState->shipped = false;
+            $OrderState->paid = false;
+            $OrderState->deleted = false;
+            $OrderState->template = 'payment_error';
+            $OrderState->add();
+
+            Configuration::updateValue('PS_OS_MONDIDOPAY_DECLINED', $OrderState->id);
+
+            if (file_exists(dirname(dirname(dirname(__FILE__))) . '/img/os/9.gif')) {
+                @copy(dirname(dirname(dirname(__FILE__))) . '/img/os/9.gif', dirname(dirname(dirname(__FILE__))) . '/img/os/' . $OrderState->id . '.gif');
+            }
+        }
+    }
+
     public function hookPayment($params) 
     {
         $cart = $this->context->cart;
@@ -168,15 +281,13 @@ class mondidopay extends PaymentModule
             'analytics'=>$analytics
         );
 
-
-
-        $webhook = array( 
-            'url' => (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://').htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__.'modules/'.$this->name.'/validation.php',
+        $webhook = array(
+            'url' => _PS_BASE_URL_ . __PS_BASE_URI__ . 'modules/' . $this->name . '/transaction.php',
             'trigger' => 'payment', 
             'http_method' => 'post', 
             'data_format' => 'form_data', 
             'type' => 'CustomHttp' 
-            );
+        );
 
         $form_data = array(
             'payment_ref' => $payment_ref,
@@ -304,5 +415,81 @@ class mondidopay extends PaymentModule
             'this_path_ssl' => (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://').htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__.'modules/'.$this->name.'/'
         ));
         return $this->display(__FILE__, 'views/templates/hooks/payment_execution.tpl');
+    }
+
+    /**
+     * Lookup transaction data
+     * @param $transaction_id
+     * @return array|bool
+     */
+    public function lookupTransaction($transaction_id) {
+        $merchantID = Configuration::get('MONDIDO_MERCHANTID');
+        $password = Configuration::get('MONDIDO_PASSWORD');
+
+        $streamcontext = stream_context_create(array(
+            'http' => array(
+                'method' => 'GET',
+                'header' => 'Authorization: Basic ' . base64_encode("$merchantID:$password")
+            )
+        ));
+        $result = Tools::file_get_contents('https://api.mondido.com/v1/transactions/' . $transaction_id, false, $streamcontext);
+        $data = (array)Tools::jsonDecode($result, true);
+        if (!$data) {
+            return false;
+        }
+
+        return $data;
+    }
+
+    /**
+     * Confirm placed order
+     * @param $order_id
+     * @param $transaction_data
+     * @return void
+     */
+    public function confirmOrder($order_id, $transaction_data) {
+        $order = new Order($order_id);
+        //TODO: update delivery address if it is the case
+        if ($transaction_data['transaction_type'] === 'invoice') {
+            $pd = $transaction_data['payment_details'];
+
+            $shipping_address = new Address((int)$order->id_address_invoice);
+            if (!empty($pd['phone'])) {
+                $shipping_address->phone = $pd['phone'];
+            }
+            if (!empty($pd['last_name'])) {
+                $shipping_address->lastname = $pd['last_name'];
+            }
+            if (!empty($pd['first_name'])) {
+                $shipping_address->firstname = $pd['first_name'];
+            }
+            if (!empty($pd['address_1'])) {
+                $shipping_address->address1 = $pd['address_1'];
+            }
+            if (!empty($pd['address_2'])) {
+                $shipping_address->address2 = $pd['address_2'];
+            }
+            if (!empty($pd['city'])) {
+                $shipping_address->city = $pd['city'];
+            }
+            if (!empty($pd['zip'])) {
+                $shipping_address->postcode = $pd['zip'];
+            }
+            if (!empty($pd['country_code'])) {
+                $shipping_address->country = $pd['country_code'];
+            }
+
+            $shipping_address->update();
+        }
+
+        $payments = $order->getOrderPaymentCollection();
+        if ($payments->count() > 0) {
+            $payments[0]->transaction_id = $transaction_data['id'];
+            $payments[0]->card_number = $transaction_data['card_number'];
+            $payments[0]->card_holder = $transaction_data['card_holder'];
+            $payments[0]->card_brand = $transaction_data['card_type'];
+            $payments[0]->payment_method = $transaction_data['transaction_type'];
+            $payments[0]->update();
+        }
     }
 }
