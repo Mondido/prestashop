@@ -325,7 +325,7 @@ class mondidopay extends PaymentModule
                 $this->secretCode
             ),
             'this_path' => $this->_path,
-            'this_path_ssl' => (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://').htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__.'modules/'.$this->name.'/',
+            'this_path_ssl' => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/',
             'webhook'=> Tools::jsonEncode($webhook)
         );
         $this->context->smarty->assign($form_data);
@@ -407,7 +407,8 @@ class mondidopay extends PaymentModule
             'test'	=> $this->test,
             'dev'	=> $this->dev,
             'this_path' => $this->_path,
-            'this_path_ssl' => Configuration::get('PS_FO_PROTOCOL').$_SERVER['HTTP_HOST'].__PS_BASE_URI__."modules/{$this->name}/"));
+            'this_path_ssl' => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/'
+        ));
         return $this->display(__FILE__, 'views/templates/admin/config.tpl');
     }
 
@@ -456,7 +457,7 @@ class mondidopay extends PaymentModule
                 $this->secretCode
             ),
             'this_path' => $this->_path,
-            'this_path_ssl' => (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://').htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__.'modules/'.$this->name.'/'
+            'this_path_ssl' => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/'
         ));
         return $this->display(__FILE__, 'views/templates/hooks/payment_execution.tpl');
     }
