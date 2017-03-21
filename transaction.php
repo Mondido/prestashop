@@ -26,8 +26,17 @@ $log->setFilename(_PS_ROOT_DIR_ . '/log/mondidopay.log');
 $mondidopay = new mondidopay();
 $transaction_id = Tools::getValue('transaction_id') ? Tools::getValue('transaction_id') : Tools::getValue('id');
 if (empty($transaction_id)) {
+    http_response_code(400);
     $log->logDebug('Error: Invalid transaction ID');
     exit('Error: Invalid transaction ID');
+}
+
+// Lookup transaction
+$transaction_data = $mondidopay->lookupTransaction($transaction_id);
+if (!$transaction_data) {
+    http_response_code(400);
+    $log->logDebug('Error: Failed to verify transaction');
+    exit('Failed to verify transaction');
 }
 
 $merchantID = Configuration::get('MONDIDO_MERCHANTID');
@@ -51,13 +60,30 @@ $hash = md5(sprintf('%s%s%s%s%s%s%s',
     (string)$secret
 ));
 if($hash !== Tools::getValue('response_hash')) {
+    http_response_code(400);
     $log->logDebug('Error: Wrong hash');
     exit('Error: Wrong hash');
 }
 
+// Wait for order placement by customer
+set_time_limit(0);
+$times = 0;
+
 // Lookup Order
-$order_id = Order::getOrderByCartId((int)$cart->id);
-if ($order_id !== false) {
+$order_id = mondidopay::getOrderByCartId((int)$cart->id);
+while (!$order_id) {
+    $times++;
+    if ($times > 6) {
+        break;
+    }
+    sleep(10);
+
+    // Lookup Order
+    $order_id = mondidopay::getOrderByCartId((int)$cart->id);
+}
+
+if ($order_id) {
+    http_response_code(200);
     $log->logDebug("Order {$order_id} already placed. Cart ID: {$cart->id}");
     exit("Order {$order_id} already placed. Cart ID: {$cart->id}");
 }
@@ -123,6 +149,7 @@ switch ($transaction_data['status']) {
             false,
             $cart->secure_key
         );
+        $order = new Order($mondidopay->currentOrder);
         break;
     case 'failed';
     default:
@@ -137,8 +164,10 @@ switch ($transaction_data['status']) {
             false,
             $cart->secure_key
         );
+        $order = new Order($mondidopay->currentOrder);
         break;
 }
 
-$log->logDebug('OK');
+http_response_code(200);
+$log->logDebug("Order was placed by WebHook. Order ID: {$order->id}. Transaction status: {$transaction_data['status']}");
 exit('OK');

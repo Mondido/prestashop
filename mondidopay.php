@@ -536,4 +536,21 @@ class mondidopay extends PaymentModule
             $payments[0]->update();
         }
     }
+
+    /**
+     * Get an order by its cart id
+     *
+     * @param integer $id_cart Cart id
+     * @return array Order details
+     */
+    public static function getOrderByCartId($id_cart)
+    {
+        $sql = 'SELECT `id_order`
+				FROM `'._DB_PREFIX_.'orders`
+				WHERE `id_cart` = '.(int)($id_cart)
+            .Shop::addSqlRestriction();
+        $result = Db::getInstance()->getRow($sql, false);
+
+        return isset($result['id_order']) ? $result['id_order'] : false;
+    }
 }
