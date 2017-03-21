@@ -201,11 +201,6 @@ class mondidopay extends PaymentModule
         $error_name = Tools::getValue('error_name');
         $total = number_format($cart->getOrderTotal(true, 3), 2, '.', '');
         
-        $platform_version = _PS_VERSION_;
-        $platform_type = 'prestashop';
-        $lang_version = phpversion();
-        $plugin_version = '1.5.3';
-        
         $analytics = [];
         $google = [];
         $items = [];
@@ -286,7 +281,13 @@ class mondidopay extends PaymentModule
         $metadata = array(
             'products'=>$prod_data,
             'customer'=>$customer,
-            'analytics'=>$analytics
+            'analytics'=>$analytics,
+            'platform' => array(
+                'type' => 'prestashop',
+                'version' => _PS_VERSION_,
+                'language_version' => phpversion(),
+                'plugin_version' => $this->version
+            )
         );
 
         $webhook = array(
