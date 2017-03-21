@@ -39,14 +39,22 @@ class mondidopay extends PaymentModule
         $this->version = '1.5.3';
         $this->tab = 'payments_gateways';
         $this->confirmUninstall = $this->l('Are you sure you want to uninstall?');
-        $this->setModuleSettings();
         $this->need_instance = 1;
         $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
         $this->bootstrap = true;
+
+        // Init Configuration
+        $config = Configuration::getMultiple(array('MONDIDO_MERCHANTID', 'MONDIDO_PASSWORD', 'MONDIDO_SECRET', 'MONDIDO_TEST', 'MONDIDO_DEV'));
+        $this->merchantID = isset($config['MONDIDO_MERCHANTID']) ? $config['MONDIDO_MERCHANTID'] : '';
+        $this->password = isset($config['MONDIDO_PASSWORD']) ? $config['MONDIDO_PASSWORD'] : '';
+        $this->secretCode = isset($config['MONDIDO_SECRET']) ? $config['MONDIDO_SECRET'] : '';
+        $this->test = isset($config['MONDIDO_TEST']) ? $config['MONDIDO_TEST'] : '';
+        $this->dev = isset($config['MONDIDO_DEV']) ? $config['MONDIDO_DEV'] : '';
+
         parent::__construct();
     
-        if (!Configuration::get('mondidopay')) {
-            $this->warning = $this->l('No name provided');
+        if (empty($this->merchantID) || empty($this->password) || empty($this->secretCode)) {
+            $this->warning = $this->l('Please configure module');
         }
 
         // @todo Remove in future version
@@ -391,7 +399,6 @@ class mondidopay extends PaymentModule
             Configuration::updateValue('MONDIDO_DEV', Tools::getValue('dev'));
             Configuration::updateValue('MONDIDO_SUCCESS_URL', Tools::getValue('success_url'));
             Configuration::updateValue('MONDIDO_ERROR_URL', Tools::getValue('error_url'));
-            $this->setModuleSettings();
         }
         $this->context->smarty->assign(array(
             'merchantID' => $this->merchantID,
@@ -403,14 +410,7 @@ class mondidopay extends PaymentModule
             'this_path_ssl' => Configuration::get('PS_FO_PROTOCOL').$_SERVER['HTTP_HOST'].__PS_BASE_URI__."modules/{$this->name}/"));
         return $this->display(__FILE__, 'views/templates/admin/config.tpl');
     }
-    public function setModuleSettings() 
-    {
-        $this->merchantID = Configuration::get('MONDIDO_MERCHANTID');
-        $this->secretCode = Configuration::get('MONDIDO_SECRET');
-        $this->password	  = Configuration::get('MONDIDO_PASSWORD');
-        $this->test		  = Configuration::get('MONDIDO_TEST');
-        $this->dev        = Configuration::get('MONDIDO_DEV');
-    }
+
     public function execPayment($cart) 
     {
         if (!$this->active) {
