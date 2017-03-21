@@ -39,10 +39,6 @@ if (!$transaction_data) {
     exit('Failed to verify transaction');
 }
 
-$merchantID = Configuration::get('MONDIDO_MERCHANTID');
-$password = Configuration::get('MONDIDO_PASSWORD');
-$secret = Configuration::get('MONDIDO_SECRET');
-
 $cart_id = str_replace(array('dev', 'a'), '', Tools::getValue('payment_ref'));
 $cart = new Cart($cart_id);
 $currency =  new Currency((int)$cart->id_currency);
@@ -51,13 +47,13 @@ $currency =  new Currency((int)$cart->id_currency);
 $thisCustomer = (array) Tools::jsonDecode(Tools::getValue('customer'), true);
 $total = number_format($cart->getOrderTotal(true, 3), 2, '.', '');
 $hash = md5(sprintf('%s%s%s%s%s%s%s',
-    (string)$merchantID,
+    (string)$mondidopay->merchantID,
     (string)Tools::getValue('payment_ref'),
     (string)$thisCustomer['ref'],
     $total,
     strtolower($currency->iso_code),
     (string)Tools::getValue('status'),
-    (string)$secret
+    (string)$mondidopay->secretCode
 ));
 if($hash !== Tools::getValue('response_hash')) {
     http_response_code(400);

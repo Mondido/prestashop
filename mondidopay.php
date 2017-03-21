@@ -468,13 +468,10 @@ class mondidopay extends PaymentModule
      * @return array|bool
      */
     public function lookupTransaction($transaction_id) {
-        $merchantID = Configuration::get('MONDIDO_MERCHANTID');
-        $password = Configuration::get('MONDIDO_PASSWORD');
-
         $streamcontext = stream_context_create(array(
             'http' => array(
                 'method' => 'GET',
-                'header' => 'Authorization: Basic ' . base64_encode("$merchantID:$password")
+                'header' => 'Authorization: Basic ' . base64_encode("{$this->merchantID}:{$this->password}")
             )
         ));
         $result = Tools::file_get_contents('https://api.mondido.com/v1/transactions/' . $transaction_id, false, $streamcontext);
