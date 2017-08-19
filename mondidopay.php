@@ -194,143 +194,136 @@ class mondidopay extends PaymentModule
     public function hookPayment($params) 
     {
         $cart = $this->context->cart;
-        $cart_details = $cart->getSummaryDetails(null, true);
-        $billing_address = new Address($this->context->cart->id_address_invoice);
-        $prod_data = $cart->getProducts();
         
         $error_name = Tools::getValue('error_name');
-        $total = number_format($cart->getOrderTotal(true, 3), 2, '.', '');
-        
-        $analytics = [];
-        $google = [];
-        $items = [];
-        foreach ($prod_data as $i){
-            $prod = array(
-              'artno' => $i['reference'],
-              'description' => $i['name'],
-              'amount' => $i['total_wt'],
-              'qty' => $i['quantity'],
-              'vat' => $i['rate'],
-              'discount' => '0.00'
-            );
-            array_push($items, $prod);
-        }    
-        //Shipping
-        $ship_name = $cart_details['carrier']->name;
-        if(!$ship_name){
-            $ship_name = 'Shipping';
-        }
-        $prod = array(
-            'artno' => 'Shipping',
-            'description' => $ship_name,
-            'amount' => $cart_details['total_shipping'],
-            'qty' => '1',
-            'vat' => number_format($cart_details['total_shipping']-$cart_details['total_shipping_tax_exc'], 2, '.', ''),
-            'discount' => '0.00'
-        );
-        array_push($items, $prod);
+	    $payment_ref = ($this->test ? 'dev' : 'a') . $cart->id;
+	    $billing_address = new Address($this->context->cart->id_address_invoice);
+	    $products = $cart->getProducts();
+	    $currency = $this->context->currency;
+	    $cart_details = $cart->getSummaryDetails(null, true);
+	    $total = number_format($cart->getOrderTotal(true, 3), 2, '.', '');
+	    $subtotal = number_format($cart_details['total_price_without_tax'], 2, '.', '');
+	    $vat_amount = $total - $subtotal;
 
-        // Discount
-        $total_discounts_tax_incl = (float)abs($cart->getOrderTotal(true, Cart::ONLY_DISCOUNTS, $cart->getProducts(), (int)$cart->id_carrier));
-        if ($total_discounts_tax_incl > 0) {
-            $total_discounts_tax_excl = (float)abs($cart->getOrderTotal(false, Cart::ONLY_DISCOUNTS, $cart->getProducts(), (int)$cart->id_carrier));
-            $prod = array(
-                'artno' => 'Discount',
-                'description' => $this->l('Discount'),
-                'amount' => -1 * $total_discounts_tax_incl,
-                'qty' => '1',
-                'vat' => number_format(-1 * ($total_discounts_tax_incl - $total_discounts_tax_excl), 2, '.', ''),
-                'discount' => '0.00'
-            );
-            array_push($items, $prod);
-        }
-        
-        if(isset($_COOKIE['m_ad_code'])) {
-            $google["ad_code"] = $_COOKIE['m_ad_code'];
-        }
-        if(isset($_COOKIE['m_ref_str'])) {
-            $analytics["referrer"] = $_COOKIE['m_ref_str'];
-        }
-        $currency =  new Currency((int)$cart->id_currency);
-        $analytics['google'] = $google;
-        $data = Tools::jsonEncode($prod_data);
-        if($this->dev == 'true')
-        {
-            $payment_ref =  'dev'.$cart->id;
-        }
-        else
-        {
-            $payment_ref =  'a'.$cart->id;
-        }
-        $subtotal = number_format($cart_details['total_price_without_tax'], 2, '.', '');
-        $vat_amount = $total - $subtotal;
-        
-        $customer = array(
-            'firstname' => $billing_address->firstname,
-            'lastname' => $billing_address->lastname,
-            'address1' => $billing_address->address1,
-            'address2' => $billing_address->address2,
-            'postcode' => $billing_address->postcode,
-            'phone' => $billing_address->phone,
-            'phone_mobile' => $billing_address->phone_mobile,
-            'city' => $billing_address->city,
-            'country' => $billing_address->country,
-            'email' => $this->context->customer->email
-        );
+	    // Process Products
+	    $items = [];
+	    foreach ($products as $product) {
+		    $items[] = [
+			    'artno' => $product['reference'],
+			    'description' => $product['name'],
+			    'amount' => $product['total_wt'],
+			    'qty' => $product['quantity'],
+			    'vat' => number_format($product['rate'], 2, '.', ''),
+			    'discount' => 0
+		    ];
+	    }
 
-        $metadata = array(
-            'products'=>$prod_data,
-            'customer'=>$customer,
-            'analytics'=>$analytics,
-            'platform' => array(
-                'type' => 'prestashop',
-                'version' => _PS_VERSION_,
-                'language_version' => phpversion(),
-                'plugin_version' => $this->version
-            )
-        );
+	    // Process Shipping
+	    $total_shipping_tax_incl = (float)$cart->getTotalShippingCost();
+	    if ($total_shipping_tax_incl > 0) {
+		    $carrier = new Carrier((int)$cart->id_carrier);
+		    $carrier_tax_rate = Tax::getCarrierTaxRate((int)$carrier->id, $cart->id_address_invoice);
+		    $total_shipping_tax_excl = $total_shipping_tax_incl / (($carrier_tax_rate / 100) + 1);
 
-        $webhook = array(
-            'url' => _PS_BASE_URL_ . __PS_BASE_URI__ . 'modules/' . $this->name . '/transaction.php',
-            'trigger' => 'payment', 
-            'http_method' => 'post', 
-            'data_format' => 'form_data', 
-            'type' => 'CustomHttp' 
-        );
+		    $items[] = [
+			    'artno' => 'Shipping',
+			    'description' => $carrier->name,
+			    'amount' => $total_shipping_tax_incl,
+			    'qty' => 1,
+			    'vat' => number_format($carrier_tax_rate, 2, '.', ''),
+			    'discount' => 0
+		    ];
+	    }
 
-        $form_data = array(
-            'payment_ref' => $payment_ref,
-            'items' => Tools::jsonEncode($items),
-            'analytics' => Tools::jsonEncode($analytics),
-            'error_name' =>  $error_name,
-            'merchantID' => $this->merchantID,
-            'secretCode' => $this->secretCode,
-            'password'	=> $this->password,
-            'test'	=> $this->test,
-            'total' => $total,
-            'subtotal' => $subtotal,
-            'currency' => $currency,
-            'custom' => Tools::jsonEncode(array('id_cart' => $cart->id, 'hash' => $cart->nbProducts())),
-            'customer' => $this->context->customer,
-            'metadata'=> Tools::jsonEncode($metadata),
-            'cart' => $cart,
-            'address'	=> $billing_address,
-            'vat_amount' => $vat_amount,
-            'hash'	=> md5(
-                $this->merchantID .
-                $payment_ref .
-                $this->context->customer->id .
-                $total .
-                strtolower($currency->iso_code) .
-                (  ($this->test == "true") ? "test"  : ""  ) .
-                $this->secretCode
-            ),
-            'this_path' => $this->_path,
-            'this_path_ssl' => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/',
-            'webhook'=> Tools::jsonEncode($webhook)
-        );
-        $this->context->smarty->assign($form_data);
-        return $this->display(__FILE__, 'views/templates/hooks/payment.tpl');
+	    // Process Discounts
+	    $total_discounts_tax_incl = (float)abs($cart->getOrderTotal(true, Cart::ONLY_DISCOUNTS, $cart->getProducts(), (int)$cart->id_carrier));
+	    if ($total_discounts_tax_incl > 0) {
+		    $total_discounts_tax_excl = (float)abs($cart->getOrderTotal(false, Cart::ONLY_DISCOUNTS, $cart->getProducts(), (int)$cart->id_carrier));
+		    $total_discounts_tax_rate = (($total_discounts_tax_incl / $total_discounts_tax_excl) - 1) * 100;
+
+		    $items[] = [
+			    'artno' => 'Discount',
+			    'description' => $this->l('Discount'),
+			    'amount' => -1 * $total_discounts_tax_incl,
+			    'qty' => 1,
+			    'vat' => number_format($total_discounts_tax_rate, 2, '.', ''),
+			    'discount' => 0
+		    ];
+	    }
+
+	    // Prepare Metadata
+	    $metadata = [
+		    'products' => (array) $products,
+		    'customer' => [
+			    'firstname' => $billing_address->firstname,
+			    'lastname' => $billing_address->lastname,
+			    'address1' => $billing_address->address1,
+			    'address2' => $billing_address->address2,
+			    'postcode' => $billing_address->postcode,
+			    'phone' => $billing_address->phone,
+			    'phone_mobile' => $billing_address->phone_mobile,
+			    'city' => $billing_address->city,
+			    'country' => $billing_address->country,
+			    'email' => $this->context->customer->email
+		    ],
+		    'analytics' => [],
+		    'platform' => [
+			    'type' => 'prestashop',
+			    'version' => _PS_VERSION_,
+			    'language_version' => phpversion(),
+			    'plugin_version' => $this->version
+		    ]
+	    ];
+
+	    // Prepare Analytics
+	    if (isset($_COOKIE['m_ref_str'])) {
+		    $metadata['analytics']['referrer'] = $_COOKIE['m_ref_str'];
+	    }
+	    if (isset($_COOKIE['m_ad_code'])) {
+		    $metadata['analytics']['google'] = [];
+		    $metadata['analytics']['google']['ad_code'] = $_COOKIE['m_ad_code'];
+	    }
+
+	    // Prepare WebHook
+	    $webhook = [
+		    'url' => _PS_BASE_URL_ . __PS_BASE_URI__ . 'modules/' . $this->name . '/transaction.php',
+		    'trigger' => 'payment',
+		    'http_method' => 'post',
+		    'data_format' => 'form_data',
+		    'type' => 'CustomHttp'
+	    ];
+
+	    $this->context->smarty->assign([
+		    'payment_ref' => $payment_ref,
+		    'items' => Tools::jsonEncode($items),
+		    'error_name' =>  $error_name,
+		    'merchantID' => $this->merchantID,
+		    'secretCode' => $this->secretCode,
+		    'password'	=> $this->password,
+		    'test'	=> $this->test,
+		    'total' => $total,
+		    'subtotal' => $subtotal,
+		    'currency' => $currency,
+		    'custom' => Tools::jsonEncode(array('id_cart' => $cart->id, 'hash' => $cart->nbProducts())),
+		    'customer' => $this->context->customer,
+		    'metadata'=> Tools::jsonEncode($metadata),
+		    'cart' => $cart,
+		    'address'	=> $billing_address,
+		    'vat_amount' => $vat_amount,
+		    'hash'	=> md5(
+			    $this->merchantID .
+			    $payment_ref .
+			    $this->context->customer->id .
+			    $total .
+			    strtolower($currency->iso_code) .
+			    (  ($this->test == "true") ? "test"  : ""  ) .
+			    $this->secretCode
+		    ),
+		    'this_path' => $this->_path,
+		    'this_path_ssl' => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/',
+		    'webhook'=> Tools::jsonEncode($webhook)
+	    ]);
+	    return $this->display(__FILE__, 'views/templates/hooks/payment.tpl');
     }
 
     /**
