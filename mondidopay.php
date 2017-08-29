@@ -196,7 +196,7 @@ class mondidopay extends PaymentModule
         $cart = $this->context->cart;
         
         $error_name = Tools::getValue('error_name');
-	    $payment_ref = ($this->test ? 'dev' : 'a') . $cart->id;
+	    $payment_ref = ($this->test == "true" ? 'dev' : 'a') . $cart->id;
 	    $billing_address = new Address($this->context->cart->id_address_invoice);
 	    $products = $cart->getProducts();
 	    $currency = $this->context->currency;
