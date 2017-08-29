@@ -303,7 +303,7 @@ class mondidopay extends PaymentModule
 		    'test'	=> $this->test,
 		    'total' => $total,
 		    'subtotal' => $subtotal,
-		    'currency' => $currency,
+		    'currency' => $currency['iso_code'],
 		    'custom' => Tools::jsonEncode(array('id_cart' => $cart->id, 'hash' => $cart->nbProducts())),
 		    'customer' => $this->context->customer,
 		    'metadata'=> Tools::jsonEncode($metadata),
