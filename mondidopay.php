@@ -289,40 +289,38 @@ class mondidopay extends PaymentModule
 		    'url' => _PS_BASE_URL_ . __PS_BASE_URI__ . 'modules/' . $this->name . '/transaction.php',
 		    'trigger' => 'payment',
 		    'http_method' => 'post',
-		    'data_format' => 'form_data',
+		    'data_format' => 'json',
 		    'type' => 'CustomHttp'
 	    ];
 
-	    $this->context->smarty->assign([
-		    'payment_ref' => $payment_ref,
-		    'items' => Tools::jsonEncode($items),
-		    'error_name' =>  $error_name,
-		    'merchantID' => $this->merchantID,
-		    'secretCode' => $this->secretCode,
-		    'password'	=> $this->password,
-		    'test'	=> $this->test,
-		    'total' => $total,
-		    'subtotal' => $subtotal,
-		    'currency' => $currency['iso_code'],
-		    'custom' => Tools::jsonEncode(array('id_cart' => $cart->id, 'hash' => $cart->nbProducts())),
-		    'customer' => $this->context->customer,
-		    'metadata'=> Tools::jsonEncode($metadata),
-		    'cart' => $cart,
-		    'address'	=> $billing_address,
-		    'vat_amount' => $vat_amount,
-		    'hash'	=> md5(
-			    $this->merchantID .
-			    $payment_ref .
-			    $this->context->customer->id .
-			    $total .
-			    strtolower($currency->iso_code) .
-			    (  ($this->test == "true") ? "test"  : ""  ) .
-			    $this->secretCode
-		    ),
-		    'this_path' => $this->_path,
-		    'this_path_ssl' => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/',
-		    'webhook'=> Tools::jsonEncode($webhook)
-	    ]);
+        $this->context->smarty->assign([
+            'customer_ref' => $this->context->customer->id,
+            'total' => $total,
+            'currency' => strtolower($currency->iso_code),
+            'hash' => md5(sprintf(
+                '%s%s%s%s%s%s%s',
+                $this->merchantID,
+                $payment_ref,
+                $this->context->customer->id,
+                $total,
+                strtolower($currency->iso_code),
+                $this->test === 'true' ? 'test' : '',
+                $this->secretCode
+            )),
+            'merchantID' => $this->merchantID,
+            'success_url' => _PS_BASE_URL_ . __PS_BASE_URI__ . 'modules/' . $this->name . '/validation.php',
+            'error_url' => _PS_BASE_URL_ . __PS_BASE_URI__ . 'modules/' . $this->name . '/payment.php',
+            'test' => $this->test === 'true' ? 'true' : 'false',
+            //'authorize' => $this->module->authorize ? 'true' : '',
+            'items' => json_encode($items),
+            'payment_ref' => $payment_ref,
+            'vat_amount' => $vat_amount,
+            'webhook' => json_encode($webhook),
+            'metadata' => json_encode($metadata),
+            'this_path' => $this->_path,
+            'this_path_ssl' => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/',
+        ]);
+
 	    return $this->display(__FILE__, 'views/templates/hooks/payment.tpl');
     }
 
@@ -369,19 +367,6 @@ class mondidopay extends PaymentModule
         return $this->display(__FILE__, 'confirmation.tpl');
     }
 
-    public function httpAuth() 
-    {
-        $merchantID = $this->merchantID;
-        $password = $this->password;
-        $remoteurl = 'https://api.mondido.com/' ;
-        $opts = array('http' => array('method' => "GET",
-            'header' => "Authorization: Basic " . base64_encode("$merchantID:$password")
-        ));
-        $context = stream_context_create($opts);
-        $file = Tools::file_get_contents($remoteurl, false, $context);
-        $data = (array) Tools::jsonDecode($file, true);
-        return $data;
-    }
     public function getContent() 
     {
         if (Tools::getValue('mondido_updateSettings')) 

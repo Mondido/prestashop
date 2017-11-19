@@ -21,6 +21,9 @@ require_once dirname(__FILE__) . '/mondidopay.php';
 
 $mondidopay = new mondidopay();
 $transaction_id = Tools::getValue('transaction_id') ? Tools::getValue('transaction_id') : Tools::getValue('id');
+$hash = Tools::getValue('hash');
+$payment_ref = Tools::getValue('payment_ref');
+
 if (empty($transaction_id)) {
     //@todo Trigger error
     exit('Invalid transaction ID');
@@ -41,92 +44,27 @@ if (!$transaction_data) {
 // @todo Process transaction cost with $transaction_data['cost']
 // @todo Process error with $transaction_data['error']
 
-// Lookup Order
-$order_id = Order::getOrderByCartId((int)$cart->id);
-if ($order_id === false) {
-    // Place order
-    switch ($transaction_data['status']) {
-        case 'pending':
-            $mondidopay->validateOrder(
-                $cart->id,
-                Configuration::get('PS_OS_MONDIDOPAY_PENDING'),
-                $total,
-                $mondidopay->displayName,
-                null,
-                array('transaction_id' => $transaction_id),
-                $currency->id,
-                false,
-                $cart->secure_key
-            );
+$cart_id = str_replace(array('dev', 'a'), '', $payment_ref);
 
-            $order = new Order($mondidopay->currentOrder);
-            $mondidopay->confirmOrder($order->id, $transaction_data);
-            break;
-        case 'approved':
-            $mondidopay->validateOrder(
-                $cart->id,
-                Configuration::get('PS_OS_MONDIDOPAY_APPROVED'),
-                $total,
-                $mondidopay->displayName,
-                null,
-                array('transaction_id' => $transaction_id),
-                $currency->id,
-                false,
-                $cart->secure_key
-            );
-
-            $order = new Order($mondidopay->currentOrder);
-            $mondidopay->confirmOrder($order->id, $transaction_data);
-            break;
-        case 'authorized':
-            $mondidopay->validateOrder(
-                $cart->id,
-                Configuration::get('PS_OS_MONDIDOPAY_AUTHORIZED'),
-                $total,
-                $mondidopay->displayName,
-                null,
-                array('transaction_id' => $transaction_id),
-                $currency->id,
-                false,
-                $cart->secure_key
-            );
-
-            $order = new Order($mondidopay->currentOrder);
-            $mondidopay->confirmOrder($order->id, $transaction_data);
-            break;
-        case 'declined':
-            $mondidopay->validateOrder(
-                $cart->id,
-                Configuration::get('PS_OS_MONDIDOPAY_DECLINED'),
-                $total,
-                $mondidopay->displayName,
-                null,
-                array('transaction_id' => $transaction_id),
-                $currency->id,
-                false,
-                $cart->secure_key
-            );
-            break;
-        case 'failed';
-        default:
-            $mondidopay->validateOrder(
-                $cart->id,
-                Configuration::get('PS_OS_ERROR'),
-                $total,
-                $mondidopay->displayName,
-                null,
-                array('transaction_id' => $transaction_id),
-                $currency->id,
-                false,
-                $cart->secure_key
-            );
-            break;
+// Wait for order confirmation from IPN/WebHook
+set_time_limit( 0 );
+$times = 0;
+do {
+    $times ++;
+    if ( $times > 6 ) {
+        break;
     }
-} else {
-    $order = new Order($order_id);
+    sleep( 10 );
+
+    $order_id = $mondidopay->getOrderByCartId($cart_id);
+} while (empty($order_id));
+
+// Order was not posted
+if (empty($order_id)) {
+    //@todo Trigger error
+    exit('Order was not posted');
 }
 
-$hash = Tools::getValue('hash');
-$payment_ref = Tools::getValue('payment_ref');
+$order = new Order($order_id);
 
-Tools::redirectLink(_PS_BASE_URL_ . __PS_BASE_URI__ . 'index.php?controller=order-confirmation&id_cart=' . (int)$cart->id . '&payment_ref=' . $payment_ref . '&id_module=' . $mondidopay->id . '&id_order=' . $mondidopay->currentOrder . '&key=' . $order->secure_key . '&transaction_id=' . $transaction_id . '&hash=' . $hash);
+Tools::redirectLink(_PS_BASE_URL_ . __PS_BASE_URI__ . 'index.php?controller=order-confirmation&id_cart=' . (int)$cart->id . '&payment_ref=' . $payment_ref . '&id_module=' . $mondidopay->id . '&id_order=' . $order->id . '&key=' . $order->secure_key . '&transaction_id=' . $transaction_id . '&hash=' . $hash);

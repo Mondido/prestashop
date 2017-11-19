@@ -24,146 +24,144 @@ $log = new FileLogger();
 $log->setFilename(_PS_ROOT_DIR_ . '/log/mondidopay.log');
 
 $mondidopay = new mondidopay();
-$transaction_id = Tools::getValue('transaction_id') ? Tools::getValue('transaction_id') : Tools::getValue('id');
-if (empty($transaction_id)) {
-    http_response_code(400);
-    $log->logDebug('Error: Invalid transaction ID');
-    exit('Error: Invalid transaction ID');
-}
 
-// Lookup transaction
-$transaction_data = $mondidopay->lookupTransaction($transaction_id);
-if (!$transaction_data) {
-    http_response_code(400);
-    $log->logDebug('Error: Failed to verify transaction');
-    exit('Failed to verify transaction');
-}
-
-$cart_id = str_replace(array('dev', 'a'), '', Tools::getValue('payment_ref'));
-$cart = new Cart($cart_id);
-$currency =  new Currency((int)$cart->id_currency);
-
-// Verify hash
-$thisCustomer = (array) Tools::jsonDecode(Tools::getValue('customer'), true);
-$total = number_format($cart->getOrderTotal(true, 3), 2, '.', '');
-$hash = md5(sprintf('%s%s%s%s%s%s%s',
-    (string)$mondidopay->merchantID,
-    (string)Tools::getValue('payment_ref'),
-    (string)$thisCustomer['ref'],
-    $total,
-    strtolower($currency->iso_code),
-    (string)Tools::getValue('status'),
-    (string)$mondidopay->secretCode
-));
-if($hash !== Tools::getValue('response_hash')) {
-    http_response_code(400);
-    $log->logDebug('Error: Wrong hash');
-    exit('Error: Wrong hash');
-}
-
-// Wait for order placement by customer
-set_time_limit(0);
-$times = 0;
-
-// Lookup Order
-$order_id = mondidopay::getOrderByCartId((int)$cart->id);
-while (!$order_id) {
-    $times++;
-    if ($times > 6) {
-        break;
+try {
+    $raw_body = file_get_contents( 'php://input' );
+    $data = @json_decode( $raw_body, TRUE );
+    if (!$data ) {
+        throw new Exception( 'Invalid data' );
     }
-    sleep(10);
+
+    if (empty($data['id'])) {
+        throw new Exception( 'Invalid transaction ID' );
+    }
+
+    // Log transaction details
+    $log->logDebug('Incoming Transaction: ' . var_export(json_encode($data, true), true));
+
+    // Lookup transaction
+    $transaction_data = $mondidopay->lookupTransaction($data['id']);
+    if (!$transaction_data) {
+        throw new Exception('Error: Failed to verify transaction');
+    }
+
+    $transaction_id = $data['id'];
+    $payment_ref = $data['payment_ref'];
+    $status = $data['status'];
+    $cart_id = str_replace(array('dev', 'a'), '', $payment_ref);
+    $cart = new Cart($cart_id);
+    if (!Validate::isLoadedObject($cart)) {
+        throw new Exception('Error: Failed to load cart with ID ' . $cart_id);
+    }
+    $currency =  new Currency((int)$cart->id_currency);
+
+    // Verify hash
+    $total = number_format($cart->getOrderTotal(true, 3), 2, '.', '');
+    $hash = md5(sprintf('%s%s%s%s%s%s%s',
+        $mondidopay->merchantID,
+        $payment_ref,
+        $cart->id_customer,
+        $total,
+        strtolower($currency->iso_code),
+        $status,
+        $mondidopay->secretCode
+    ));
+    if ($hash !== $data['response_hash']) {
+        throw new Exception('Hash verification failed');
+    }
 
     // Lookup Order
     $order_id = mondidopay::getOrderByCartId((int)$cart->id);
-}
+    if ($order_id) {
+        throw new Exception("Order {$order_id} already placed. Cart ID: {$cart->id}");
+    }
 
-if ($order_id) {
+    // Place order
+    switch ($transaction_data['status']) {
+        case 'pending':
+            $mondidopay->validateOrder(
+                $cart->id,
+                Configuration::get('PS_OS_MONDIDOPAY_PENDING'),
+                $total,
+                $mondidopay->displayName,
+                null,
+                array('transaction_id' => $transaction_id),
+                $currency->id,
+                false,
+                $cart->secure_key
+            );
+
+            $order = new Order($mondidopay->currentOrder);
+            $mondidopay->confirmOrder($order->id, $transaction_data);
+            break;
+        case 'approved':
+            $mondidopay->validateOrder(
+                $cart->id,
+                Configuration::get('PS_OS_MONDIDOPAY_APPROVED'),
+                $total,
+                $mondidopay->displayName,
+                null,
+                array('transaction_id' => $transaction_id),
+                $currency->id,
+                false,
+                $cart->secure_key
+            );
+
+            $order = new Order($mondidopay->currentOrder);
+            $mondidopay->confirmOrder($order->id, $transaction_data);
+            break;
+        case 'authorized':
+            $mondidopay->validateOrder(
+                $cart->id,
+                Configuration::get('PS_OS_MONDIDOPAY_AUTHORIZED'),
+                $total,
+                $mondidopay->displayName,
+                null,
+                array('transaction_id' => $transaction_id),
+                $currency->id,
+                false,
+                $cart->secure_key
+            );
+
+            $order = new Order($mondidopay->currentOrder);
+            $mondidopay->confirmOrder($order->id, $transaction_data);
+            break;
+        case 'declined':
+            $mondidopay->validateOrder(
+                $cart->id,
+                Configuration::get('PS_OS_MONDIDOPAY_DECLINED'),
+                $total,
+                $mondidopay->displayName,
+                null,
+                array('transaction_id' => $transaction_id),
+                $currency->id,
+                false,
+                $cart->secure_key
+            );
+            $order = new Order($mondidopay->currentOrder);
+            break;
+        case 'failed';
+        default:
+            $mondidopay->validateOrder(
+                $cart->id,
+                Configuration::get('PS_OS_ERROR'),
+                $total,
+                $mondidopay->displayName,
+                null,
+                array('transaction_id' => $transaction_id),
+                $currency->id,
+                false,
+                $cart->secure_key
+            );
+            $order = new Order($mondidopay->currentOrder);
+            break;
+    }
+
     http_response_code(200);
-    $log->logDebug("Order {$order_id} already placed. Cart ID: {$cart->id}");
-    exit("Order {$order_id} already placed. Cart ID: {$cart->id}");
+    $log->logDebug("Order was placed by WebHook. Order ID: {$order->id}. Transaction status: {$transaction_data['status']}");
+    exit('OK');
+} catch (Exception $e) {
+    http_response_code(400);
+    $log->logDebug('Error: ' . $e->getMessage());
+    exit('Error: ' . $e->getMessage());
 }
-// Place order
-switch ($transaction_data['status']) {
-    case 'pending':
-        $mondidopay->validateOrder(
-            $cart->id,
-            Configuration::get('PS_OS_MONDIDOPAY_PENDING'),
-            $total,
-            $mondidopay->displayName,
-            null,
-            array('transaction_id' => $transaction_id),
-            $currency->id,
-            false,
-            $cart->secure_key
-        );
-
-        $order = new Order($mondidopay->currentOrder);
-        $mondidopay->confirmOrder($order->id, $transaction_data);
-        break;
-    case 'approved':
-        $mondidopay->validateOrder(
-            $cart->id,
-            Configuration::get('PS_OS_MONDIDOPAY_APPROVED'),
-            $total,
-            $mondidopay->displayName,
-            null,
-            array('transaction_id' => $transaction_id),
-            $currency->id,
-            false,
-            $cart->secure_key
-        );
-
-        $order = new Order($mondidopay->currentOrder);
-        $mondidopay->confirmOrder($order->id, $transaction_data);
-        break;
-    case 'authorized':
-        $mondidopay->validateOrder(
-            $cart->id,
-            Configuration::get('PS_OS_MONDIDOPAY_AUTHORIZED'),
-            $total,
-            $mondidopay->displayName,
-            null,
-            array('transaction_id' => $transaction_id),
-            $currency->id,
-            false,
-            $cart->secure_key
-        );
-
-        $order = new Order($mondidopay->currentOrder);
-        $mondidopay->confirmOrder($order->id, $transaction_data);
-        break;
-    case 'declined':
-        $mondidopay->validateOrder(
-            $cart->id,
-            Configuration::get('PS_OS_MONDIDOPAY_DECLINED'),
-            $total,
-            $mondidopay->displayName,
-            null,
-            array('transaction_id' => $transaction_id),
-            $currency->id,
-            false,
-            $cart->secure_key
-        );
-        $order = new Order($mondidopay->currentOrder);
-        break;
-    case 'failed';
-    default:
-        $mondidopay->validateOrder(
-            $cart->id,
-            Configuration::get('PS_OS_ERROR'),
-            $total,
-            $mondidopay->displayName,
-            null,
-            array('transaction_id' => $transaction_id),
-            $currency->id,
-            false,
-            $cart->secure_key
-        );
-        $order = new Order($mondidopay->currentOrder);
-        break;
-}
-
-http_response_code(200);
-$log->logDebug("Order was placed by WebHook. Order ID: {$order->id}. Transaction status: {$transaction_data['status']}");
-exit('OK');
