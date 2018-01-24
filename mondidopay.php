@@ -59,6 +59,11 @@ class mondidopay extends PaymentModule
 
         // @todo Remove in future version
         $this->addOrderStates();
+
+        /* Backward compatibility */
+        if (_PS_VERSION_ < '1.5') {
+            require(_PS_MODULE_DIR_ . $this->name.'/backward_compatibility/backward.php');
+        }
     }
     public function install() 
     {
@@ -219,7 +224,7 @@ class mondidopay extends PaymentModule
 	    }
 
 	    // Process Shipping
-	    $total_shipping_tax_incl = (float)$cart->getTotalShippingCost();
+	    $total_shipping_tax_incl = _PS_VERSION_ < '1.5' ? (float)$cart->getOrderShippingCost() : (float)$cart->getTotalShippingCost();
 	    if ($total_shipping_tax_incl > 0) {
 		    $carrier = new Carrier((int)$cart->id_carrier);
 		    $carrier_tax_rate = Tax::getCarrierTaxRate((int)$carrier->id, $cart->id_address_invoice);
@@ -503,14 +508,16 @@ class mondidopay extends PaymentModule
             $shipping_address->update();
         }
 
-        $payments = $order->getOrderPaymentCollection();
-        if ($payments->count() > 0) {
-            $payments[0]->transaction_id = $transaction_data['id'];
-            $payments[0]->card_number = $transaction_data['card_number'];
-            $payments[0]->card_holder = $transaction_data['card_holder'];
-            $payments[0]->card_brand = $transaction_data['card_type'];
-            $payments[0]->payment_method = $transaction_data['transaction_type'];
-            $payments[0]->update();
+        if (_PS_VERSION_ >= '1.5') {
+            $payments = $order->getOrderPaymentCollection();
+            if ($payments->count() > 0) {
+                $payments[0]->transaction_id = $transaction_data['id'];
+                $payments[0]->card_number = $transaction_data['card_number'];
+                $payments[0]->card_holder = $transaction_data['card_holder'];
+                $payments[0]->card_brand = $transaction_data['card_type'];
+                $payments[0]->payment_method = $transaction_data['transaction_type'];
+                $payments[0]->update();
+            }
         }
     }
 
@@ -525,7 +532,7 @@ class mondidopay extends PaymentModule
         $sql = 'SELECT `id_order`
 				FROM `'._DB_PREFIX_.'orders`
 				WHERE `id_cart` = '.(int)($id_cart)
-            .Shop::addSqlRestriction();
+            . (_PS_VERSION_ < '1.5' ? '' : Shop::addSqlRestriction());
         $result = Db::getInstance()->getRow($sql, false);
 
         return isset($result['id_order']) ? $result['id_order'] : false;
