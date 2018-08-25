@@ -291,7 +291,7 @@ class mondidopay extends PaymentModule
 
 	    // Prepare WebHook
 	    $webhook = [
-		    'url' => _PS_BASE_URL_ . __PS_BASE_URI__ . 'modules/' . $this->name . '/transaction.php',
+		    'url' => self::getShopDomain() . __PS_BASE_URI__ . 'modules/' . $this->name . '/transaction.php',
 		    'trigger' => 'payment',
 		    'http_method' => 'post',
 		    'data_format' => 'json',
@@ -313,8 +313,8 @@ class mondidopay extends PaymentModule
                 $this->secretCode
             )),
             'merchantID' => $this->merchantID,
-            'success_url' => _PS_BASE_URL_ . __PS_BASE_URI__ . 'modules/' . $this->name . '/validation.php',
-            'error_url' => _PS_BASE_URL_ . __PS_BASE_URI__ . 'modules/' . $this->name . '/payment.php',
+            'success_url' => self::getShopDomain() . __PS_BASE_URI__ . 'modules/' . $this->name . '/validation.php',
+            'error_url' => self::getShopDomain() . __PS_BASE_URI__ . 'modules/' . $this->name . '/payment.php',
             'test' => $this->test === 'true' ? 'true' : 'false',
             //'authorize' => $this->module->authorize ? 'true' : '',
             'items' => json_encode($items),
@@ -536,5 +536,18 @@ class mondidopay extends PaymentModule
         $result = Db::getInstance()->getRow($sql, false);
 
         return isset($result['id_order']) ? $result['id_order'] : false;
+    }
+
+	/**
+	 * Get Shop Domain
+	 * @return string
+	 */
+    public static function getShopDomain()
+    {
+	    if (Tools::usingSecureMode()) {
+	    	return Tools::getShopDomainSsl(true);
+	    }
+
+	    return Tools::getShopDomain(true);
     }
 }

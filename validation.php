@@ -67,4 +67,4 @@ if (empty($order_id)) {
 
 $order = new Order($order_id);
 
-Tools::redirectLink(_PS_BASE_URL_ . __PS_BASE_URI__ . 'index.php?controller=order-confirmation&id_cart=' . (int)$cart->id . '&payment_ref=' . $payment_ref . '&id_module=' . $mondidopay->id . '&id_order=' . $order->id . '&key=' . $order->secure_key . '&transaction_id=' . $transaction_id . '&hash=' . $hash);
+Tools::redirectLink(mondidopay::getShopDomain() . __PS_BASE_URI__ . 'index.php?controller=order-confirmation&id_cart=' . (int)$cart->id . '&payment_ref=' . $payment_ref . '&id_module=' . $mondidopay->id . '&id_order=' . $order->id . '&key=' . $order->secure_key . '&transaction_id=' . $transaction_id . '&hash=' . $hash);
