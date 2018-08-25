@@ -59,12 +59,18 @@ class mondidopay extends PaymentModule
 
         // @todo Remove in future version
         $this->addOrderStates();
+	    $this->registerHook('DisplayHeader');
 
         /* Backward compatibility */
         if (_PS_VERSION_ < '1.5') {
             require(_PS_MODULE_DIR_ . $this->name.'/backward_compatibility/backward.php');
         }
     }
+
+	/**
+	 * Install Hook
+	 * @return bool
+	 */
     public function install() 
     {
         // Install Order statuses
@@ -72,12 +78,18 @@ class mondidopay extends PaymentModule
 
         return parent::install() &&
             $this->registerHook('header') &&
+            $this->registerHook('DisplayHeader') &&
             $this->registerHook('backOfficeHeader') &&
             $this->registerHook('payment') &&
             $this->registerHook('paymentReturn') &&
             $this->registerHook('actionPaymentConfirmation') &&
             $this->registerHook('displayPayment');
     }
+
+	/**
+	 * UnInstall Hook
+	 * @return mixed
+	 */
     public function uninstall() 
     {
         Configuration::deleteByName('MONDIDO_MERCHANTID');
@@ -196,135 +208,30 @@ class mondidopay extends PaymentModule
         }
     }
 
+	/**
+	 * Hook: DisplayHeader
+	 * @param $params
+	 */
+	public function hookDisplayHeader($params)
+	{
+		$this->context->controller->addCSS($this->_path . 'css/style.css', 'all');
+	}
+
+	/**
+	 * Hook: Payment
+	 * Render payment method in payment methods list
+	 * @param $params
+	 */
     public function hookPayment($params) 
     {
-        $cart = $this->context->cart;
-        
-        $error_name = Tools::getValue('error_name');
-	    $payment_ref = ($this->test == "true" ? 'dev' : 'a') . $cart->id;
-	    $billing_address = new Address($this->context->cart->id_address_invoice);
-	    $products = $cart->getProducts();
-	    $currency = $this->context->currency;
-	    $cart_details = $cart->getSummaryDetails(null, true);
-	    $total = number_format($cart->getOrderTotal(true, 3), 2, '.', '');
-	    $subtotal = number_format($cart_details['total_price_without_tax'], 2, '.', '');
-	    $vat_amount = $total - $subtotal;
-
-	    // Process Products
-	    $items = [];
-	    foreach ($products as $product) {
-		    $items[] = [
-			    'artno' => $product['reference'],
-			    'description' => $product['name'],
-			    'amount' => $product['total_wt'],
-			    'qty' => $product['quantity'],
-			    'vat' => number_format($product['rate'], 2, '.', ''),
-			    'discount' => 0
-		    ];
+	    if (!$this->active) {
+		    return;
 	    }
 
-	    // Process Shipping
-	    $total_shipping_tax_incl = _PS_VERSION_ < '1.5' ? (float)$cart->getOrderShippingCost() : (float)$cart->getTotalShippingCost();
-	    if ($total_shipping_tax_incl > 0) {
-		    $carrier = new Carrier((int)$cart->id_carrier);
-		    $carrier_tax_rate = Tax::getCarrierTaxRate((int)$carrier->id, $cart->id_address_invoice);
-		    $total_shipping_tax_excl = $total_shipping_tax_incl / (($carrier_tax_rate / 100) + 1);
-
-		    $items[] = [
-			    'artno' => 'Shipping',
-			    'description' => $carrier->name,
-			    'amount' => $total_shipping_tax_incl,
-			    'qty' => 1,
-			    'vat' => number_format($carrier_tax_rate, 2, '.', ''),
-			    'discount' => 0
-		    ];
-	    }
-
-	    // Process Discounts
-	    $total_discounts_tax_incl = (float)abs($cart->getOrderTotal(true, Cart::ONLY_DISCOUNTS, $cart->getProducts(), (int)$cart->id_carrier));
-	    if ($total_discounts_tax_incl > 0) {
-		    $total_discounts_tax_excl = (float)abs($cart->getOrderTotal(false, Cart::ONLY_DISCOUNTS, $cart->getProducts(), (int)$cart->id_carrier));
-		    $total_discounts_tax_rate = (($total_discounts_tax_incl / $total_discounts_tax_excl) - 1) * 100;
-
-		    $items[] = [
-			    'artno' => 'Discount',
-			    'description' => $this->l('Discount'),
-			    'amount' => -1 * $total_discounts_tax_incl,
-			    'qty' => 1,
-			    'vat' => number_format($total_discounts_tax_rate, 2, '.', ''),
-			    'discount' => 0
-		    ];
-	    }
-
-	    // Prepare Metadata
-	    $metadata = [
-		    'products' => (array) $products,
-		    'customer' => [
-			    'firstname' => $billing_address->firstname,
-			    'lastname' => $billing_address->lastname,
-			    'address1' => $billing_address->address1,
-			    'address2' => $billing_address->address2,
-			    'postcode' => $billing_address->postcode,
-			    'phone' => $billing_address->phone,
-			    'phone_mobile' => $billing_address->phone_mobile,
-			    'city' => $billing_address->city,
-			    'country' => $billing_address->country,
-			    'email' => $this->context->customer->email
-		    ],
-		    'analytics' => [],
-		    'platform' => [
-			    'type' => 'prestashop',
-			    'version' => _PS_VERSION_,
-			    'language_version' => phpversion(),
-			    'plugin_version' => $this->version
-		    ]
-	    ];
-
-	    // Prepare Analytics
-	    if (isset($_COOKIE['m_ref_str'])) {
-		    $metadata['analytics']['referrer'] = $_COOKIE['m_ref_str'];
-	    }
-	    if (isset($_COOKIE['m_ad_code'])) {
-		    $metadata['analytics']['google'] = [];
-		    $metadata['analytics']['google']['ad_code'] = $_COOKIE['m_ad_code'];
-	    }
-
-	    // Prepare WebHook
-	    $webhook = [
-		    'url' => self::getShopDomain() . __PS_BASE_URI__ . 'modules/' . $this->name . '/transaction.php',
-		    'trigger' => 'payment',
-		    'http_method' => 'post',
-		    'data_format' => 'json',
-		    'type' => 'CustomHttp'
-	    ];
-
-        $this->context->smarty->assign([
-            'customer_ref' => $this->context->customer->id,
-            'total' => $total,
-            'currency' => strtolower($currency->iso_code),
-            'hash' => md5(sprintf(
-                '%s%s%s%s%s%s%s',
-                $this->merchantID,
-                $payment_ref,
-                $this->context->customer->id,
-                $total,
-                strtolower($currency->iso_code),
-                $this->test === 'true' ? 'test' : '',
-                $this->secretCode
-            )),
-            'merchantID' => $this->merchantID,
-            'success_url' => self::getShopDomain() . __PS_BASE_URI__ . 'modules/' . $this->name . '/validation.php',
-            'error_url' => self::getShopDomain() . __PS_BASE_URI__ . 'modules/' . $this->name . '/payment.php',
-            'test' => $this->test === 'true' ? 'true' : 'false',
-            //'authorize' => $this->module->authorize ? 'true' : '',
-            'items' => json_encode($items),
-            'payment_ref' => $payment_ref,
-            'vat_amount' => $vat_amount,
-            'webhook' => json_encode($webhook),
-            'metadata' => json_encode($metadata),
-            'this_path' => $this->_path,
-            'this_path_ssl' => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/',
-        ]);
+	    $this->smarty->assign(array(
+		    'this_path' => $this->_path,
+		    'this_path_ssl' => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/',
+	    ));
 
 	    return $this->display(__FILE__, 'views/templates/hooks/payment.tpl');
     }
@@ -372,6 +279,10 @@ class mondidopay extends PaymentModule
         return $this->display(__FILE__, 'confirmation.tpl');
     }
 
+	/**
+	 * Module Settings
+	 * @return string
+	 */
     public function getContent() 
     {
         if (Tools::getValue('mondido_updateSettings')) 
@@ -385,6 +296,7 @@ class mondidopay extends PaymentModule
             Configuration::updateValue('MONDIDO_ERROR_URL', Tools::getValue('error_url'));
         }
         $this->context->smarty->assign(array(
+        	'version' => $this->version,
             'merchantID' => $this->merchantID,
             'secretCode' => $this->secretCode,
             'password'	=> $this->password,
@@ -394,56 +306,6 @@ class mondidopay extends PaymentModule
             'this_path_ssl' => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/'
         ));
         return $this->display(__FILE__, 'views/templates/admin/config.tpl');
-    }
-
-    public function execPayment($cart) 
-    {
-        if (!$this->active) {
-            return;
-        }
-        $data = Tools::jsonEncode($cart->getProducts());
-        $error_name=Tools::getValue('error_name');
-        $cart = $this->context->cart;
-        $cart_details = $cart->getSummaryDetails(null, true);
-        $billing_address = new Address($this->context->cart->id_address_invoice);
-        $total = number_format($cart->getOrderTotal(true, 3), 2, '.', '');
-        $currency = new Currency((int)$cart->id_currency);
-        if($this->dev == 'true')
-        {
-            $payment_ref =  'dev'.$cart->id;
-        }
-        else
-        {
-            $payment_ref =  'a'.$cart->id;
-        }        
-        $this->context->smarty->assign(array(
-            'payment_ref' => $payment_ref,
-            'error_name' =>  $error_name,
-            'merchantID' => $this->merchantID,
-            'secretCode' => $this->secretCode,
-            'password'	=> $this->password,
-            'test'	=> $this->test,
-            'total' => $total,
-            'subtotal' => number_format($cart_details['total_price_without_tax'], 2, '.', ''),
-            'currency' => $currency,
-            'custom' => Tools::jsonEncode(array('id_cart' => $cart->id, 'hash' => $cart->nbProducts())),
-            'customer' => $this->context->customer,
-            'metadata'=> $data,
-            'cart' => $cart,
-            'address'	=> $billing_address,
-            'hash'	=> md5(
-                $this->merchantID .
-                $payment_ref .
-                $this->context->customer->id .
-                $total .
-                strtolower($currency->iso_code) .
-                (  ($this->test == "true") ? "test"  : ""  ) .
-                $this->secretCode
-            ),
-            'this_path' => $this->_path,
-            'this_path_ssl' => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/'
-        ));
-        return $this->display(__FILE__, 'views/templates/hooks/payment_execution.tpl');
     }
 
     /**
@@ -549,5 +411,20 @@ class mondidopay extends PaymentModule
 	    }
 
 	    return Tools::getShopDomain(true);
+    }
+
+	/**
+	 * Get Module Path
+	 * @param bool $secure
+	 *
+	 * @return string
+	 */
+    public function getPath($secure = false)
+    {
+    	if ($secure) {
+		    return Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/';
+	    }
+
+	    return $this->_path;
     }
 }
