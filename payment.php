@@ -69,7 +69,7 @@ if ($total_discounts_tax_incl > 0) {
 
 // Prepare Metadata
 $metadata = array(
-	'products' => (array) $products,
+	'products' => $items,
 	'customer' => array(
 		'firstname' => $billing_address->firstname,
 		'lastname' => $billing_address->lastname,
