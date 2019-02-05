@@ -1,20 +1,4 @@
 <?php
-/**
- *    $Id$ mondidopayment Module
- *
- *    Copyright @copyright 2017 Mondido
- *
- * @category  Payment
- * @version   1.5.3
- * @author    Mondido
- * @copyright 2016 Mondido
- * @link      https://www.mondido.com
- * @license   MIT
- * @package   none
- *
- *   Description:
- *   Payment module mondidopay
- */
 require_once dirname(__FILE__) . '/../../config/config.inc.php';
 require_once dirname(__FILE__) . '/../../header.php';
 require_once dirname(__FILE__) . '/mondidopay.php';
