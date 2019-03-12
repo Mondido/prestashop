@@ -55,93 +55,118 @@ try {
 
     // Lookup Order
     $order_id = mondidopay::getOrderByCartId((int)$cart->id);
-    if ($order_id) {
-        throw new Exception("Order {$order_id} already placed. Cart ID: {$cart->id}");
+    if (!$order_id) {
+        // Place order
+        switch ($transaction_data['status']) {
+            case 'pending':
+                $mondidopay->validateOrder(
+                    $cart->id,
+                    Configuration::get('PS_OS_MONDIDOPAY_PENDING'),
+                    $total,
+                    $mondidopay->displayName,
+                    null,
+                    array('transaction_id' => $transaction_id),
+                    $currency->id,
+                    false,
+                    $cart->secure_key
+                );
+
+                $order = new Order($mondidopay->currentOrder);
+                $mondidopay->confirmOrder($order->id, $transaction_data);
+                break;
+            case 'approved':
+                $mondidopay->validateOrder(
+                    $cart->id,
+                    Configuration::get('PS_OS_MONDIDOPAY_APPROVED'),
+                    $total,
+                    $mondidopay->displayName,
+                    null,
+                    array('transaction_id' => $transaction_id),
+                    $currency->id,
+                    false,
+                    $cart->secure_key
+                );
+
+                $order = new Order($mondidopay->currentOrder);
+                $mondidopay->confirmOrder($order->id, $transaction_data);
+                break;
+            case 'authorized':
+                $mondidopay->validateOrder(
+                    $cart->id,
+                    Configuration::get('PS_OS_MONDIDOPAY_AUTHORIZED'),
+                    $total,
+                    $mondidopay->displayName,
+                    null,
+                    array('transaction_id' => $transaction_id),
+                    $currency->id,
+                    false,
+                    $cart->secure_key
+                );
+
+                $order = new Order($mondidopay->currentOrder);
+                $mondidopay->confirmOrder($order->id, $transaction_data);
+                break;
+            case 'declined':
+                $mondidopay->validateOrder(
+                    $cart->id,
+                    Configuration::get('PS_OS_MONDIDOPAY_DECLINED'),
+                    $total,
+                    $mondidopay->displayName,
+                    null,
+                    array('transaction_id' => $transaction_id),
+                    $currency->id,
+                    false,
+                    $cart->secure_key
+                );
+                $order = new Order($mondidopay->currentOrder);
+                break;
+            case 'failed';
+            default:
+                $mondidopay->validateOrder(
+                    $cart->id,
+                    Configuration::get('PS_OS_ERROR'),
+                    $total,
+                    $mondidopay->displayName,
+                    null,
+                    array('transaction_id' => $transaction_id),
+                    $currency->id,
+                    false,
+                    $cart->secure_key
+                );
+                $order = new Order($mondidopay->currentOrder);
+                break;
+        }
+
+        http_response_code(200);
+        $log->logDebug("Order was placed by WebHook. Order ID: {$order->id}. Transaction status: {$transaction_data['status']}");
+    } else {
+         // Update Order status
+        $statuses = array(
+            'pending' => Configuration::get('PS_OS_MONDIDOPAY_PENDING'),
+            'approved' => Configuration::get('PS_OS_MONDIDOPAY_APPROVED'),
+            'authorized' => Configuration::get('PS_OS_MONDIDOPAY_AUTHORIZED'),
+            'declined' => Configuration::get('PS_OS_MONDIDOPAY_DECLINED'),
+            'failed' => Configuration::get('PS_OS_ERROR')
+        );
+        $id_order_state = $statuses[$status];
+
+        $order = new Order($order_id);
+        if ((int)$order->current_state !== (int)$id_order_state) {
+            // Set the order status
+            $new_history = new OrderHistory();
+            $new_history->id_order = (int)$order->id;
+            $new_history->changeIdOrderState((int)$id_order_state, $order, true);
+            $new_history->addWithemail(true);
+
+            if (in_array($status, array('approved', 'authorized'))) {
+                $this->module->confirmOrder($order_id, $transaction_data);
+            }
+        }
+
+        http_response_code(200);
+        $log->logDebug("Order was updated by WebHook. Order ID: {$order->id}. Transaction status: {$transaction_data['status']}");
     }
 
-    // Place order
-    switch ($transaction_data['status']) {
-        case 'pending':
-            $mondidopay->validateOrder(
-                $cart->id,
-                Configuration::get('PS_OS_MONDIDOPAY_PENDING'),
-                $total,
-                $mondidopay->displayName,
-                null,
-                array('transaction_id' => $transaction_id),
-                $currency->id,
-                false,
-                $cart->secure_key
-            );
-
-            $order = new Order($mondidopay->currentOrder);
-            $mondidopay->confirmOrder($order->id, $transaction_data);
-            break;
-        case 'approved':
-            $mondidopay->validateOrder(
-                $cart->id,
-                Configuration::get('PS_OS_MONDIDOPAY_APPROVED'),
-                $total,
-                $mondidopay->displayName,
-                null,
-                array('transaction_id' => $transaction_id),
-                $currency->id,
-                false,
-                $cart->secure_key
-            );
-
-            $order = new Order($mondidopay->currentOrder);
-            $mondidopay->confirmOrder($order->id, $transaction_data);
-            break;
-        case 'authorized':
-            $mondidopay->validateOrder(
-                $cart->id,
-                Configuration::get('PS_OS_MONDIDOPAY_AUTHORIZED'),
-                $total,
-                $mondidopay->displayName,
-                null,
-                array('transaction_id' => $transaction_id),
-                $currency->id,
-                false,
-                $cart->secure_key
-            );
-
-            $order = new Order($mondidopay->currentOrder);
-            $mondidopay->confirmOrder($order->id, $transaction_data);
-            break;
-        case 'declined':
-            $mondidopay->validateOrder(
-                $cart->id,
-                Configuration::get('PS_OS_MONDIDOPAY_DECLINED'),
-                $total,
-                $mondidopay->displayName,
-                null,
-                array('transaction_id' => $transaction_id),
-                $currency->id,
-                false,
-                $cart->secure_key
-            );
-            $order = new Order($mondidopay->currentOrder);
-            break;
-        case 'failed';
-        default:
-            $mondidopay->validateOrder(
-                $cart->id,
-                Configuration::get('PS_OS_ERROR'),
-                $total,
-                $mondidopay->displayName,
-                null,
-                array('transaction_id' => $transaction_id),
-                $currency->id,
-                false,
-                $cart->secure_key
-            );
-            $order = new Order($mondidopay->currentOrder);
-            break;
-    }
-
-    http_response_code(200);
-    $log->logDebug("Order was placed by WebHook. Order ID: {$order->id}. Transaction status: {$transaction_data['status']}");
     exit('OK');
 } catch (Exception $e) {
     http_response_code(400);
