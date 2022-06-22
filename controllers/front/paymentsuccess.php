@@ -120,7 +120,7 @@ class MondidoPaymentsPaymentSuccessModuleFrontController extends ModuleFrontCont
             Tools::getValue('hash'),
             $config->merchantId(),
             $config->secret(),
-            Tools::getValue('payment_ref'),
+            $transaction->payment_ref,
             Tools::getValue('status'),
             $transaction
         );

@@ -19,7 +19,7 @@ class mondidopayments extends PaymentModule
     public function __construct()
     {
         $this->name = 'mondidopayments';
-        $this->version = '2.0.1';
+        $this->version = '2.0.3';
         $this->author = 'Mondido Payments';
         $this->tab = 'payments_gateways';
 

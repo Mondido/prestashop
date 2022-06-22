@@ -102,11 +102,11 @@ class Hook
                     Tools::redirectAdmin($this->context->link->getAdminLink('AdminOrders', true, [], [
                         'vieworder' => '',
                         'id_order' => $params['id_order'],
-                        'mondidopayments_error_message' => sprintf(
+                        'mondidopayments_error_messages' => [sprintf(
                             $this->module->l("Changing status from %s to %s not allowed", 'hook'),
                             $this->statusName($current_state),
                             $this->statusName($new_state)
-                        )
+                        )]
                     ]));
                     return;
                 }
